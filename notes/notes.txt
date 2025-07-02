@@ -1,0 +1,40 @@
+need to learn :
+jwt
+socket.io
+flask
+
+games ()  __ : 
+
+farming games/ai :
+liquid sort
+2-0-4-8
+sudoko
+chain reaction
+card games
+
+group games/ai: 
+
+tic-tac-toe !
+guess who !
+quiz !
+maze !
+card games !
+
+
+earning games :
+mines 
+dragon tower
+high low
+roulette
+crash 
+dice
+jackpot
+
+phase 1 : 
+set up
+
+phase 2 : 
+code
+
+phase 3 : 
+style

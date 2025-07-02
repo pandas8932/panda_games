@@ -1,0 +1,43 @@
+backend : 
+
+ BackEnd/
+├── config/
+│   └── db.js                # MongoDB connection logic
+├── controllers/
+│   └── diceController.js    # Game logic (rolling dice, payout)
+├── models/
+│   └── User.js              # User schema with coins
+│   └── DiceGame.js          # Logs each game (optional)
+├── routes/
+│   └── diceRoutes.js        # Route: /api/dice
+├── middlewares/
+│   └── auth.js              # JWT token validation
+├── .env                     # MongoDB URI and JWT secret
+├── app.js                # Main server file
+├── package.json             # Node dependencies
+
+
+frontend :
+
+FrontEnd/
+├── public/
+│   └── favicon.ico              # (optional)
+├── src/
+│   ├── api/
+│   │   └── axios.js             # Axios instance with JWT support
+│   ├── auth/
+│   │   ├── Login.jsx            # Login form component
+│   │   └── Register.jsx         # Register form component
+│   ├── components/
+│   │   └── Navbar.jsx           # Navigation + logout
+│   ├── pages/
+│   │   └── DiceGame.jsx         # Main dice game UI
+│   ├── utils/
+│   │   └── auth.js              # Helper: token save, get, remove
+│   ├── App.jsx                  # Routes setup
+│   └── main.jsx                 # ReactDOM root
+├── .env                         # VITE_API_URL
+├── index.html                   # Vite entry point
+├── package.json
+├── vite.config.js
+
