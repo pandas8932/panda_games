@@ -3,9 +3,17 @@ backend initialization:
 npm init -y
 npm install express mongoose dotenv cors jsonwebtoken bcrypt
 
+to run : 
+
+node app.js
+
 frontend initialization :
 
 npm create vite@latest frontend -- --template react 
 >> cd frontend 
 >> npm install
 >> npm install axios react-router-dom
+
+for running :
+
+npm run dev

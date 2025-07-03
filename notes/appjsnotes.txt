@@ -1,0 +1,42 @@
+1.dotenv.config();     
+what this does : 
+
+Node.js does not automatically read .env files.
+So this line is required to make things like process.env.MONGO_URI work.
+Simple ga chepali ante .env file lo information read avvadhu , so config/database lo manam mongodb 
+connect apudu process.env.mongourl istham kadha , adhi automatic ga read avvadhu , adhi read avvataniki dotenv.config() use chestham
+
+
+2.app.use(express.json());
+
+This is Express middleware that tells your app to accept and parse JSON in incoming requests.
+
+frontend nunchi example client username , email ila pampithe adhi manam backend lo access chesi usecase batti work cheyali kadha dhaniki 
+we use this one 
+
+example :
+frontend nunchi ila send chesthe           backend lo we can access like this using express.json()
+{                                          req.body.username  // ➜ "prem"
+  "username": "prem",                      req.body.balance   // ➜ 100
+  "balance": 100
+}
+
+3. cors()
+
+By default, browsers block requests from one domain to another.
+
+| Frontend                        | Backend                           | Result            |
+| ------------------------------- | --------------------------------- | ----------------- |
+| `http://localhost:3000` (React) | `http://localhost:5000` (Express) | ❌ Blocked by CORS |
+
+Because these are different ports, they are considered different origins.
+
+You use the cors middleware to explicitly allow cross-origin requests:
+const cors = require("cors");
+app.use(cors());
+
+Now your frontend (even if it runs on a different port or domain) can talk to the backend safely.
+
+
+
+
