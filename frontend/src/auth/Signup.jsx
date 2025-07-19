@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
-import './Signup.css';
+import "./signup.css";
 
-const SignUp = () => {
+const Signup = () => {
   const [form, setForm] = useState({
     username: "",
     email: "",
@@ -23,7 +23,6 @@ const SignUp = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    
     try {
       await axios.post("/auth/register", form);
       navigate("/signin", { state: { registered: true } });
@@ -35,81 +34,85 @@ const SignUp = () => {
   };
 
   return (
-    <div className="signup-container">
-      <div className="signup-box">
-        <h2 className="signup-title">Create Your Account</h2>
-        
-        {error && <div className="error-message">{error}</div>}
-        
-        <form onSubmit={handleRegister}>
-          <div className="input-group">
-            <label htmlFor="username">Username</label>
-            <input 
-              id="username"
-              name="username" 
-              type="text" 
-              value={form.username} 
-              onChange={handleChange} 
-              required 
-              placeholder="Enter your username"
-            />
-          </div>
-          
-          <div className="input-group">
-            <label htmlFor="email">Email</label>
-            <input 
-              id="email"
-              name="email" 
-              type="email" 
-              value={form.email} 
-              onChange={handleChange} 
-              required 
-              placeholder="Enter your email"
-            />
-          </div>
-          
-          <div className="input-group">
-            <label htmlFor="phone">Phone Number</label>
-            <input 
-              id="phone"
-              name="phone" 
-              type="tel" 
-              value={form.phone} 
-              onChange={handleChange} 
-              required 
-              placeholder="Enter your phone number"
-            />
-          </div>
-          
-          <div className="input-group">
-            <label htmlFor="password">Password</label>
-            <input 
-              id="password"
-              name="password" 
-              type="password" 
-              value={form.password} 
-              onChange={handleChange} 
-              required 
-              placeholder="Create a password"
-              minLength="6"
-            />
-          </div>
-          
-          <button 
-            type="submit" 
-            className="submit-btn"
+    <div className="split-container">
+      {/* Left Side */}
+      <div className="left-side">
+        <img
+          src="https://res.cloudinary.com/diilqdk7o/image/upload/v1752903396/ChatGPT_Image_Jul_19_2025_10_11_28_AM_ilrnam.png"
+          alt="Visual"
+          className="side-image"
+        />
+        <div className="pandagames-text">
+          {"PandaGames".split("").map((char, index) => (
+            <span className={`char char-${index}`} key={index}>
+              {char}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Right Side */}
+      <div className="right-side">
+        <div className="right-background"></div>
+
+        <div className="custom-heading">Create Your Account</div>
+
+        <form className="signup-form" onSubmit={handleRegister}>
+          {error && <div className="error-message">{error}</div>}
+
+          <input
+            type="text"
+            name="username"
+            placeholder="Enter your username"
+            className="custom-input input-username"
+            value={form.username}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            className="custom-input input-email"
+            value={form.email}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="tel"
+            name="phone"
+            placeholder="Enter your phone number"
+            className="custom-input input-phone"
+            value={form.phone}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Create a password"
+            className="custom-input input-password"
+            value={form.password}
+            onChange={handleChange}
+            required
+            minLength={6}
+          />
+          <button
+            type="submit"
+            className="custom-button"
             disabled={isLoading}
           >
-            {isLoading ? 'Creating Account...' : 'Sign Up'}
+            {isLoading ? "Creating Account..." : "SIGN UP"}
           </button>
-        </form>
 
-        <p className="auth-link">
-          Already have an account? <Link to="/signin">Sign in</Link>
-        </p>
+          <p className="signin-text">
+            Already have an account?{" "}
+            <Link to="/signin" className="signin-link">Sign in</Link>
+          </p>
+        </form>
       </div>
     </div>
   );
 };
 
-export default SignUp;
+export default Signup;
