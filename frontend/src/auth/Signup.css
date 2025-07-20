@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Jaini+Purva&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kablammo&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap');
+
 
 
 .split-container {
@@ -73,16 +76,20 @@
 .signup-form button {
   width: 100%;
   padding: 12px;
-  background-color: #007bfc;
-  color: white;
+  background-color: rgba(103, 184, 122, 1);
+  opacity: 0.7;
+  color: rgba(255, 255, 255, 1);
+  font-family: Kablammo;
+  font-size: 30px;
+font-style: normal;
+font-weight: 300;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  letter-spacing: 2px;
   cursor: pointer;
 }
 
-.signup-form button:hover {
-  background-color: #005bb5;
-}
+
 
 /* ----------- Animated PandaGames text ------------- */
 /* ----------- PandaGames Animated Text ------------- */
@@ -220,25 +227,23 @@
   max-width: 480px;
   padding: 18px 26px;
   border-radius: 30px;
-  background: rgba(86, 150, 91, 1);
-  opacity: 0.45;
+  background: rgba(86, 150, 91, 0.45); /* semi-transparent background */
   border: none;
-  font-size: 20px;
-  color: #FFF;
+  font-size: 25px;
+  color: rgba(255, 255, 255, 0.9);     /* white with 90% opacity */
   font-family: "Jaini Purva", cursive;
-  font-weight: 400;
+  font-weight: 300;
+  text-align: center;
   line-height: normal;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Optional to highlight radius */
 }
-/* Placeholder styling */
+
 .custom-input::placeholder {
-  color: white;
+   color: rgba(255, 255, 255, 1);
   font-family: "Jaini Purva", cursive;
   font-size: 36px;
-  font-style: normal;
   font-weight: 400;
-  line-height: normal;
 }
+
 
 
 .custom-button {
@@ -255,12 +260,41 @@
 
 .signin-text {
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 20px;
   color: white;
 }
 
+.signin-text :hover{
+  margin-top: 10px;
+  font-size: 20px;
+  color: greenyellow;
+}
+
 .signin-link {
-  color: #1890ff;
+  color: white;
   cursor: pointer;
   font-weight: 500;
+}
+
+
+.signup-form input{
+  width : 504px;
+  height: 58px;
+  padding : 12px ;
+  opacity: 0.35;
+  margin-bottom: 1rem;
+  border-radius: 30px;
+  border : #56965b ;
+  background-color: #56965b;
+}
+
+.custom-input:focus {
+  outline: none;
+  box-shadow: none ;
+  background: white;
+  color: black;
+  font-family: Jacques Francois ; /* Or any other font you prefer */
+  font-size: 30px;
+  text-align: center;
+  /* opacity: 0.6; */
 }
