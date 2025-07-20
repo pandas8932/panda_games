@@ -261,7 +261,7 @@ font-weight: 300;
 .signin-text {
   margin-top: 10px;
   font-size: 20px;
-  color: white;
+  color:rgb(173, 216, 230) ;
 }
 
 .signin-text :hover{
@@ -276,18 +276,47 @@ font-weight: 300;
   font-weight: 500;
 }
 
-
-.signup-form input{
-  width : 504px;
+/* Replace your existing input and placeholder styles with these */
+.signup-form input {
+  width: 504px;
   height: 58px;
-  padding : 12px ;
-  opacity: 0.35;
+  padding: 12px;
   margin-bottom: 1rem;
   border-radius: 30px;
-  border : #56965b ;
-  background-color: #56965b;
+  border: none;
+  background-color: rgba(86, 150, 91, 0.45); /* Background opacity only */
+  color: rgba(255, 255, 255, 0.95); /* Solid white text */
+  font-family: "Jaini Purva", cursive;
+  font-size: 25px;
+  text-align: center;
 }
 
+.signup-form input::placeholder {
+  color: rgba(255, 255, 255, 0.9); /* More opaque placeholder */
+  opacity: 0.7; /* Force full visibility */
+  font-family: "Jaini Purva", cursive;
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.signup-form input:focus {
+  background-color: rgba(255, 255, 255, 0.4); /* Less transparent when focused */
+  color: #000; /* Dark text when focused */
+  font-family: "Jacques Francois", serif;
+  font-size: 30px;
+}
+
+/* Error message styling */
+.error-message {
+  color: #ff4d4f;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 16px;
+}
 .custom-input:focus {
   outline: none;
   box-shadow: none ;
