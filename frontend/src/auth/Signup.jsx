@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "../api/axios";
 import "./signup.css";
 
@@ -12,8 +12,16 @@ const Signup = () => {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.fromLanding) {
+      setAnimateIn(true);
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -34,11 +42,11 @@ const Signup = () => {
   };
 
   return (
-    <div className="split-container">
+    <div className={`split-container ${animateIn ? "slide-in-right" : ""}`}>
       {/* Left Side */}
       <div className="left-side">
         <img
-          src="https://res.cloudinary.com/diilqdk7o/image/upload/v1752903396/ChatGPT_Image_Jul_19_2025_10_11_28_AM_ilrnam.png"
+          src="https://res.cloudinary.com/diilqdk7o/image/upload/v1753069752/Resize_image_project_zvycai.png"
           alt="Visual"
           className="side-image"
         />

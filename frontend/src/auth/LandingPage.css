@@ -1,155 +1,133 @@
-/* Full-screen background */
+@import url('https://fonts.googleapis.com/css2?family=Peralta&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap');
+
 .landing-page {
   height: 100vh;
-  width: 100%;
+  width: 100vw;
   background-size: cover;
   background-position: center;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 23vh;
+  padding-top: 12vh;
+  overflow: hidden;
+  position: relative;
 }
 
-/* Centered stack layout */
 .content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
-/* Title wrapper */
-.panda-title {
-  display: flex;
-  gap: 1rem;
-  font-size: 4rem;
-  font-weight: bold;
-  color: #ffffff;
-  text-align: center;
-}
-
-/* Shared word style */
-.word {
-  opacity: 0;
-  text-shadow:
-    1px 1px 2px rgba(0, 0, 0, 0.8),
-    -1px -1px 2px rgba(0, 0, 0, 0.8),
-    0 0 8px rgba(255, 255, 255, 0.6),
-    0 0 12px rgba(255, 255, 255, 0.4);
-}
-
-/* PANDA animation: slide from right */
-.word1 {
-  transform: translateX(100px);
-  animation: slideFromRight 1s ease-out forwards;
+/* Animate PANDA - from right */
+.panda-text {
+  position: relative;
+  left: -100vw; /* start offscreen to the right */
+  animation: slideInFromLeft 1s ease-out forwards;
   animation-delay: 0.3s;
+  opacity: 0;
 }
 
-/* GAMES animation: slide from top */
-.word2 {
-  transform: translateY(-100px);
-  animation: slideFromTop 1s ease-out forwards;
-  animation-delay: 1s;
+/* Animate GAMES - from top */
+.games-text {
+  position: relative;
+  top: -100vh; /* start offscreen from top */
+  animation: slideInFromTop 1.5s ease-out forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
 }
 
-/* Animations */
-@keyframes slideFromRight {
+/* Slide in from right */
+@keyframes slideInFromLeft {
   0% {
+    left: -100vw;
     opacity: 0;
-    transform: translateX(100px);
   }
   100% {
+    left: 0;
     opacity: 1;
-    transform: translateX(0);
   }
 }
 
-@keyframes slideFromTop {
+/* Slide in from top */
+@keyframes slideInFromTop {
   0% {
+    top: -100vh;
     opacity: 0;
-    transform: translateY(-100px);
   }
   100% {
+    top: 0;
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-/* Sign-in button */
 .sign-in-button {
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #fff;
-  background-color: rgba(255, 87, 34, 0.8);
+  width: 300px;
+  height: 75px;
+  border-radius: 30px;
+  background-color: black;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s ease;
   backdrop-filter: blur(5px);
-  box-shadow: 0 0 10px rgba(255, 87, 34, 0.6);
+  box-shadow: 0 0 15px whitesmoke;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Text styling */
+  font-family: 'Konkhmer Sleokchher', cursive;
+  font-size: 62px;
+  color: #ffffff;
+  opacity: 1; /* keeps text fully visible */
 }
 
 .sign-in-button:hover {
-  background-color: rgba(255, 138, 101, 0.9);
-  box-shadow: 0 0 15px rgba(255, 138, 101, 0.8);
+  background-color: red;
   transform: scale(1.05);
+  box-shadow: 0 0 25px white;
 }
 
-/* Register text container */
-.register-text {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 1.05rem;
-  margin-top: 1rem;
-  font-family: 'Segoe UI', sans-serif;
-  letter-spacing: 0.3px;
-  position: relative;
-  animation: fadeInUp 0.8s ease-out 1.5s both;
+/* Shared heading style */
+.panda-text,
+.games-text {
+  font-family: 'Peralta', serif;
+  color: white;
+  font-weight: 400;
+  font-size: 107px;
+  text-align: center;
+  margin-left: 28px;
+  z-index: 1;
 }
 
-/* Animated underline effect */
-.register-link {
-  color: #fff;
-  font-weight: 500;
-  cursor: pointer;
-  position: relative;
-  padding-bottom: 2px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  
-  &::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 1.5px;
-    bottom: 0;
-    left: 0;
-    background-color: #FF8A65;
-    transition: width 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  }
-  
-  &:hover {
-    color: #FF8A65;
-    text-shadow: 0 0 8px rgba(255, 138, 101, 0.4);
-    
-    &::after {
-      width: 100%;
-      background: linear-gradient(90deg, #FF8A65, #FF5722);
-    }
-  }
-  
-  &:active {
-    transform: scale(0.96);
-  }
+/* Stroke outline */
+.panda-text::before,
+.games-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 15px #000000;
+  filter: blur(1px);
+  opacity: 1;
 }
 
-/* Animation for the text */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
+/* Animation to slide the whole landing page to the left */
+.slide-left-out {
+  animation: slideOutLeft 1s ease forwards;
+}
+
+/* Keyframe to slide the whole landing page to the left */
+@keyframes slideOutLeft {
+  0% {
+    transform: translateX(0);
     opacity: 1;
-    transform: translateY(0);
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
   }
 }

@@ -36,7 +36,7 @@
   object-fit: cover;
   display: block;
   opacity: 93%; 
-  filter: brightness(0.7);
+  filter: brightness(0.8);
 }
 
 .divider {
@@ -327,3 +327,4 @@ font-weight: 300;
   text-align: center;
   /* opacity: 0.6; */
 }
+
