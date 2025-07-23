@@ -74,7 +74,7 @@
 }
 
 .sign-in-button {
-  width: 300px;
+  width: 342px;
   height: 75px;
   border-radius: 30px;
   background-color: black;
@@ -86,13 +86,17 @@
   font-family: 'Konkhmer Sleokchher', cursive;
   font-size: 62px;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
 }
 
 .sign-in-button:hover {
-  background-color: white;
+  background-color: green;
   transform: scale(1.05);
-  color: black;
-  box-shadow: 0 0 25px white;
+  color: white;
+  box-shadow: 0 0 10px blanchedalmond;
 }
 
 .panda-text,

@@ -32,7 +32,7 @@ const AuthTransition = () => {
       setView(prev => (prev === "signup" ? "signin" : "signup"));
       // 5. Reset the animation state to 'idle' so the new component is in its final position
       setTransitionState("idle");
-    }, 400); // This duration must match the 'transition' time in your CSS
+    }, 800); // This duration must match the 'transition' time in your CSS
   };
 
   // Conditionally choose the component to render based on the 'view' state
