@@ -1,4 +1,4 @@
-import "./signin.css";
+import "./Signin.css";
 
 const Signin = ({ onSwitch }) => {
   return (
