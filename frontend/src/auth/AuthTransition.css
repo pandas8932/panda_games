@@ -14,7 +14,7 @@
   top: 0;
   height: 100%;
   /* This is the master transition for all animations */
-  transition: transform 0.8s ease-in-out;
+  transition: transform 0.8s ease;
 }
 
 /* LEFT PANEL (Background Image) */
