@@ -52,10 +52,13 @@
 
 /* --- STATE 2: RESTING POSITION FOR SIGNIN VIEW --- */
 .auth-wrapper.view-signin .auth-bg {
-  /* Moves right by 150% of its own width to land at the right edge */
   transform: translateX(150%);
-  background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308');
+  background-image: url('https://res.cloudinary.com/diilqdk7o/image/upload/v1752903396/ChatGPT_Image_Jul_19_2025_10_11_28_AM_ilrnam.png');
+  background-size: cover;        /* Ensures image fills entire box */
+  background-position: center;   /* Keeps focal point centered */
+  background-repeat: no-repeat;  /* Prevents tiling */
 }
+
 .auth-wrapper.view-signin .auth-form-container {
   /* Moves left by ~67% of its own width to land at the left edge */
   transform: translateX(-66.667%);
@@ -81,4 +84,332 @@
 }
 .auth-wrapper.view-signin.transition-exiting .auth-form-container {
   transform: translateX(0); /* Move back to signup position */
+}
+
+
+/* .text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 18vh;
+  z-index: 2;
+  position: relative;
+}
+
+.panda-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.panda-text,
+.games-text {
+  font-family: 'Peralta', serif;
+  color: white;
+  font-size: 90px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  animation: slideInFromLeft 1s ease-out forwards;
+  opacity: 0;
+}
+
+.games-text {
+  animation: slideInFromTop 1.5s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+.panda-text::before,
+.games-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 12px #000000;
+  filter: blur(1px);
+  opacity: 1;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    left: -100vw;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    top: -100vh;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+} */
+
+.auth-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 10vh;
+  z-index: 2;
+  position: relative;
+}
+
+.auth-panda-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-panda-text,
+.auth-games-text {
+  font-family: 'Peralta', serif;
+  color: white;
+  font-size: 80px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+}
+
+.auth-panda-text {
+  animation: slideInFromLeftAuth 1s ease-out forwards;
+  animation-delay: 0.3s;
+}
+
+.auth-games-text {
+  animation: slideInFromTopAuth 1.5s ease-out forwards;
+  animation-delay: 0.6s;
+}
+
+.auth-panda-text::before,
+.auth-games-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 12px #000000;
+  filter: blur(1px);
+  opacity: 1;
+}
+
+@keyframes slideInFromLeftAuth {
+  0% {
+    left: -100vw;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTopAuth {
+  0% {
+    top: -100vh;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.auth-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding-top: 10vh;
+  z-index: 2;
+  position: relative;
+}
+
+.auth-panda-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-word {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.letter {
+  font-family: 'Peralta', serif;
+  font-size: 90px;
+  color: white;
+  opacity: 0;
+  position: relative;
+  animation-duration: 0.8s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+/* Outline layer */
+.letter::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 12px #000000;
+  filter: blur(1px);
+  opacity: 1;
+}
+
+/* Direction-based animations */
+@keyframes slide-top-auth {
+  from {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-bottom-auth {
+  from {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-left-auth {
+  from {
+    transform: translateX(-100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes slide-right-auth {
+  from {
+    transform: translateX(100vw);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Assign classes to trigger each direction */
+.slide-top {
+  animation-name: slide-top-auth;
+}
+.slide-bottom {
+  animation-name: slide-bottom-auth;
+}
+.slide-left {
+  animation-name: slide-left-auth;
+}
+.slide-right {
+  animation-name: slide-right-auth;
+}
+
+
+.auth-text-wrapper-signin {
+  position: absolute;
+  top: 5%; /* moved slightly above */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.signin-word-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.signin-word {
+  display: flex;
+  justify-content: center;
+}
+
+.signin-letter {
+  font-family: 'Peralta', serif;
+  color: white;
+  font-size: 70px;
+  margin: 0 5px;
+  position: relative;
+  opacity: 0;
+  animation-fill-mode: forwards;
+  animation-duration: 0.7s;
+  animation-timing-function: ease-out;
+}
+
+.signin-letter::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 10px #000000;
+  filter: blur(1px);
+  opacity: 1;
+}
+
+/* Bounce animation */
+@keyframes bounceIn {
+  0% {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(15px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Flip animation */
+@keyframes flipIn {
+  0% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateX(0);
+    opacity: 1;
+  }
+}
+
+.bounce {
+  animation-name: bounceIn;
+}
+
+.flip {
+  animation-name: flipIn;
 }

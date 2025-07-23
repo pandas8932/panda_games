@@ -5,47 +5,87 @@ import Signin from "./Signin";
 import "./AuthTransition.css";
 
 const AuthTransition = () => {
-  // 'view' tracks which component to show: 'signup' or 'signin'
   const [view, setView] = useState("signup");
-  // 'transitionState' tracks the animation: 'idle' or 'exiting'
   const [transitionState, setTransitionState] = useState("idle");
-
   const location = useLocation();
 
   useEffect(() => {
-    // This logic to handle navigation from the landing page remains the same
     if (location.state?.fromLanding) {
       setView("signup");
     }
   }, [location]);
 
   const handleSwitch = () => {
-    // 1. Don't do anything if an animation is already running
     if (transitionState !== "idle") return;
-
-    // 2. Start the exit animation
     setTransitionState("exiting");
-
-    // 3. Wait for the animation to finish (must match CSS duration)
     setTimeout(() => {
-      // 4. After the animation, swap the component view
-      setView(prev => (prev === "signup" ? "signin" : "signup"));
-      // 5. Reset the animation state to 'idle' so the new component is in its final position
+      setView((prev) => (prev === "signup" ? "signin" : "signup"));
       setTransitionState("idle");
-    }, 800); // This duration must match the 'transition' time in your CSS
+    }, 800);
   };
 
-  // Conditionally choose the component to render based on the 'view' state
   const FormComponent = view === "signup" ? Signup : Signin;
 
   return (
-    // The CSS classes are now driven by the new state variables
-    <div className={`auth-wrapper view-${view} transition-${transitionState}`}>
-      <div className="auth-bg" />
-      <div className="auth-form-container">
-        <FormComponent onSwitch={handleSwitch} />
+   <div className={`auth-wrapper view-${view} transition-${transitionState}`}>
+  <div className="auth-bg">
+    {view === "signup" && (
+      <div className="auth-text-wrapper">
+        <h1 className="auth-panda-title">
+          <div className="auth-word">
+            <span className="letter slide-top" style={{ animationDelay: "0s" }} data-text="P">P</span>
+            <span className="letter slide-right" style={{ animationDelay: "0.2s" }} data-text="A">A</span>
+            <span className="letter slide-left" style={{ animationDelay: "0.4s" }} data-text="N">N</span>
+            <span className="letter slide-bottom" style={{ animationDelay: "0.6s" }} data-text="D">D</span>
+            <span className="letter slide-top" style={{ animationDelay: "0.8s" }} data-text="A">A</span>
+          </div>
+          <div className="auth-word">
+            <span className="letter slide-left" style={{ animationDelay: "1s" }} data-text="G">G</span>
+            <span className="letter slide-top" style={{ animationDelay: "1.2s" }} data-text="A">A</span>
+            <span className="letter slide-right" style={{ animationDelay: "1.4s" }} data-text="M">M</span>
+            <span className="letter slide-bottom" style={{ animationDelay: "1.6s" }} data-text="E">E</span>
+            <span className="letter slide-top" style={{ animationDelay: "1.8s" }} data-text="S">S</span>
+          </div>
+        </h1>
+      </div>
+    )}
+
+  {view === "signin" && (
+  <div className="auth-text-wrapper-signin">
+    <div className="signin-word-wrapper">
+      <div className="signin-word">
+        {"PANDA".split("").map((char, i) => (
+          <span
+            key={`p${i}`}
+            className="signin-letter bounce"
+            style={{ animationDelay: `${i * 0.2}s` }}
+            data-text={char}
+          >
+            {char}
+          </span>
+        ))}
+      </div>
+      <div className="signin-word">
+        {"GAMES".split("").map((char, i) => (
+          <span
+            key={`g${i}`}
+            className="signin-letter flip"
+            style={{ animationDelay: `${1 + i * 0.2}s` }}
+            data-text={char}
+          >
+            {char}
+          </span>
+        ))}
       </div>
     </div>
+  </div>
+)}
+  </div>
+
+  <div className="auth-form-container">
+    <FormComponent onSwitch={handleSwitch} />
+  </div>
+</div>
   );
 };
 
