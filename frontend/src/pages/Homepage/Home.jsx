@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import Navbar from '../../components/Navbar';
+
 import Farming from '../type_of_game/Farming';
 import Earning from '../type_of_game/Earning';
 import RoomGames from '../type_of_game/RoomGames';
-import './Home.css'; // optional, not required for now
+import './Home.css'; // Optional
 
 const Home = () => {
   const [selectedGame, setSelectedGame] = useState('farming');
@@ -21,13 +21,31 @@ const Home = () => {
     }
   };
 
+  const getButtonStyle = (game) => ({
+    backgroundColor: selectedGame === game ? 'black' : 'white',
+    color: selectedGame === game ? 'white' : 'black',
+    border: '1px solid black',
+    margin: '0 10px',
+    padding: '10px 20px',
+    cursor: 'pointer',
+    borderRadius: '5px',
+    fontWeight: 'bold',
+    transition: 'all 0.3s ease',
+  });
+
   return (
     <div>
-      <Navbar />
+
       <div style={{ marginTop: '50px', textAlign: 'center' }}>
-        <button onClick={() => setSelectedGame('farming')}>Farming</button>
-        <button onClick={() => setSelectedGame('earning')}>Earning</button>
-        <button onClick={() => setSelectedGame('room')}>Room Games</button>
+        <button style={getButtonStyle('farming')} onClick={() => setSelectedGame('farming')}>
+          Farming
+        </button>
+        <button style={getButtonStyle('earning')} onClick={() => setSelectedGame('earning')}>
+          Earning
+        </button>
+        <button style={getButtonStyle('room')} onClick={() => setSelectedGame('room')}>
+          Room Games
+        </button>
       </div>
       <div style={{ marginTop: '20px' }}>
         {renderGameComponent()}

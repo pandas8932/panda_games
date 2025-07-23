@@ -1,0 +1,84 @@
+.auth-wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background-color: #f0f2f5; /* A fallback background */
+}
+
+/* SHARED STYLES for the two moving panels */
+.auth-bg,
+.auth-form-container {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  /* This is the master transition for all animations */
+  transition: transform 0.8s ease;
+}
+
+/* LEFT PANEL (Background Image) */
+.auth-bg {
+  width: 40%;
+  left: 0;
+  background-size: cover;
+  background-position: center;
+  /* Also animate the background-image change */
+  transition-property: transform, background-image;
+  z-index: 1;
+}
+
+/* RIGHT PANEL (Form Container) */
+.auth-form-container {
+  width: 60%;
+  right: 0; /* Initially positioned on the right */
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+
+/* --- STATE 1: RESTING POSITION FOR SIGNUP VIEW --- */
+.auth-wrapper.view-signup .auth-bg {
+  transform: translateX(0);
+  background-image: url('https://res.cloudinary.com/diilqdk7o/image/upload/v1753069752/Resize_image_project_zvycai.png');
+}
+.auth-wrapper.view-signup .auth-form-container {
+  transform: translateX(0);
+}
+
+
+/* --- STATE 2: RESTING POSITION FOR SIGNIN VIEW --- */
+.auth-wrapper.view-signin .auth-bg {
+  /* Moves right by 150% of its own width to land at the right edge */
+  transform: translateX(150%);
+  background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308');
+}
+.auth-wrapper.view-signin .auth-form-container {
+  /* Moves left by ~67% of its own width to land at the left edge */
+  transform: translateX(-66.667%);
+}
+
+
+/* --- TRANSITION: WHEN EXITING A VIEW --- */
+
+/* This class triggers the animation. It moves the elements from their current
+   resting state to the resting state of the *other* view. */
+
+/* When exiting SIGNUP view */
+.auth-wrapper.view-signup.transition-exiting .auth-bg {
+  transform: translateX(150%); /* Move to signin position */
+}
+.auth-wrapper.view-signup.transition-exiting .auth-form-container {
+  transform: translateX(-66.667%); /* Move to signin position */
+}
+
+/* When exiting SIGNIN view */
+.auth-wrapper.view-signin.transition-exiting .auth-bg {
+  transform: translateX(0); /* Move back to signup position */
+}
+.auth-wrapper.view-signin.transition-exiting .auth-form-container {
+  transform: translateX(0); /* Move back to signup position */
+}

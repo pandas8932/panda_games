@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
+const userauth = require("../middlewares/user");
 
 // POST /auth/register
 router.post("/register", async (req, res) => {
@@ -57,5 +58,15 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Login failed", error: err.message });
   }
 });
+
+router.get('/me', userauth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('username coins');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 
 module.exports = router;
