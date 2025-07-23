@@ -1,0 +1,58 @@
+.auth-wrapper {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-bg {
+  width: 40%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: background-image 0.8s ease, transform 0.8s ease;
+  z-index: 1;
+}
+
+.show-signup .auth-bg {
+  background-image: url('https://res.cloudinary.com/diilqdk7o/image/upload/v1753069752/Resize_image_project_zvycai.png');
+}
+
+.show-signin .auth-bg {
+  background-image: url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308');
+}
+
+.auth-form {
+  width: 60%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: transform 0.8s ease-in-out;
+}
+
+/* Card Swipe Animations */
+.auth-wrapper.animating.show-signin .auth-form {
+  transform: translateX(-100%);
+}
+
+.auth-wrapper.animating.show-signin .auth-bg {
+  transform: translateX(100%);
+}
+
+.auth-wrapper.animating.show-signup .auth-form {
+  transform: translateX(0%);
+}
+
+.auth-wrapper.animating.show-signup .auth-bg {
+  transform: translateX(0%);
+}
