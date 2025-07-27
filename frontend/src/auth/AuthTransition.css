@@ -52,108 +52,19 @@
 
 /* --- STATE 2: RESTING POSITION FOR SIGNIN VIEW --- */
 .auth-wrapper.view-signin .auth-bg {
-  transform: translateX(150%);
+  /* transform: translateX(150%); */
   background-image: url('https://res.cloudinary.com/diilqdk7o/image/upload/v1752903396/ChatGPT_Image_Jul_19_2025_10_11_28_AM_ilrnam.png');
   background-size: cover;        /* Ensures image fills entire box */
   background-position: center;   /* Keeps focal point centered */
   background-repeat: no-repeat;  /* Prevents tiling */
 }
 
-.auth-wrapper.view-signin .auth-form-container {
-  /* Moves left by ~67% of its own width to land at the left edge */
-  transform: translateX(-66.667%);
-}
-
-
 /* --- TRANSITION: WHEN EXITING A VIEW --- */
 
 /* This class triggers the animation. It moves the elements from their current
    resting state to the resting state of the *other* view. */
 
-/* When exiting SIGNUP view */
-.auth-wrapper.view-signup.transition-exiting .auth-bg {
-  transform: translateX(150%); /* Move to signin position */
-}
-.auth-wrapper.view-signup.transition-exiting .auth-form-container {
-  transform: translateX(-66.667%); /* Move to signin position */
-}
 
-/* When exiting SIGNIN view */
-.auth-wrapper.view-signin.transition-exiting .auth-bg {
-  transform: translateX(0); /* Move back to signup position */
-}
-.auth-wrapper.view-signin.transition-exiting .auth-form-container {
-  transform: translateX(0); /* Move back to signup position */
-}
-
-
-/* .text-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  padding-top: 18vh;
-  z-index: 2;
-  position: relative;
-}
-
-.panda-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.panda-text,
-.games-text {
-  font-family: 'Peralta', serif;
-  color: white;
-  font-size: 90px;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-  animation: slideInFromLeft 1s ease-out forwards;
-  opacity: 0;
-}
-
-.games-text {
-  animation: slideInFromTop 1.5s ease-out forwards;
-  animation-delay: 0.6s;
-}
-
-.panda-text::before,
-.games-text::before {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  color: transparent;
-  -webkit-text-stroke: 12px #000000;
-  filter: blur(1px);
-  opacity: 1;
-}
-
-@keyframes slideInFromLeft {
-  0% {
-    left: -100vw;
-    opacity: 0;
-  }
-  100% {
-    left: 0;
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromTop {
-  0% {
-    top: -100vh;
-    opacity: 0;
-  }
-  100% {
-    top: 0;
-    opacity: 1;
-  }
-} */
 
 .auth-text-wrapper {
   display: flex;

@@ -93,10 +93,12 @@
 }
 
 .sign-in-button:hover {
-  background-color: green;
+  background-color: rgb(54,158,1);
+   /* backdrop-filter: blur(5px); */
   transform: scale(1.05);
   color: white;
-  box-shadow: 0 0 10px blanchedalmond;
+  box-shadow: 0 0 10px green;
+
 }
 
 .panda-text,
