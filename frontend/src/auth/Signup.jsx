@@ -22,7 +22,7 @@ const Signup = ({ onSwitch }) => {
     setIsLoading(true);
     try {
       await axios.post("/auth/register", form);
-      onSwitch(); // Go to sign-in on successful register
+      onSwitch();
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed. Please try again.");
     } finally {
@@ -32,15 +32,16 @@ const Signup = ({ onSwitch }) => {
 
   return (
     <div className="signup-wrapper slide-in">
-      <div className="form-box">
-        <h2>Create Your Account</h2>
-
+      <div className="form-container">
+      
         <form className="form" onSubmit={handleRegister}>
+            <h1 className="form-heading">Create Your Account</h1>
           {error && <div className="error-message">{error}</div>}
+<div className="inputs">
           <input
             type="text"
             name="username"
-            placeholder="Username"
+            placeholder="Enter your username"
             value={form.username}
             onChange={handleChange}
             required
@@ -48,7 +49,7 @@ const Signup = ({ onSwitch }) => {
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Enter your email"
             value={form.email}
             onChange={handleChange}
             required
@@ -56,7 +57,7 @@ const Signup = ({ onSwitch }) => {
           <input
             type="tel"
             name="phone"
-            placeholder="Phone"
+            placeholder="Enter your phone number"
             value={form.phone}
             onChange={handleChange}
             required
@@ -64,17 +65,20 @@ const Signup = ({ onSwitch }) => {
           <input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Create a password"
             value={form.password}
             onChange={handleChange}
             required
           />
-          <button type="submit" disabled={isLoading}>
+           <button type="submit" disabled={isLoading}>
             {isLoading ? "Creating Account..." : "Sign Up"}
           </button>
+          </div>
+         
           <p className="link-text">
             Already have an account? <span className="link" onClick={onSwitch}>Sign in</span>
           </p>
+
         </form>
       </div>
     </div>
