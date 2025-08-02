@@ -54,6 +54,24 @@
   opacity: 100%;
 }
 
+.auth-wrapper.view-signin .auth-form-container {
+  background-image: url("https://res.cloudinary.com/diilqdk7o/image/upload/v1754143366/Lucid_Origin_i_need_a_greenary_background_or_temple_kind_of_ba_0_xufwxn.jpg");
+ background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  /* Remove ONLY the blur, do NOT touch position */
+  backdrop-filter: none;
+}
+
+/* .auth-wrapper.view-signin .auth-form-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0); /* darken image slightly */
+
+
 .auth-wrapper.view-signup .auth-form-container::before {
   content: "";
   position: absolute;
@@ -307,7 +325,6 @@
   animation-fill-mode: forwards;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
   color: white;
-  backdrop-filter: blur(2px);
   text-align: center;
   z-index: 2;
   margin: 0 4px;
@@ -321,7 +338,6 @@
   z-index: -1;
   color: transparent;
   -webkit-text-stroke: 10px #000000;
-  filter: blur(1px);
   opacity: 1;
 }
 

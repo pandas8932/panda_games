@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./auth/LandingPage"; // Your animated landing page
+import LandingPage from "./components/LandingPage";
 import AuthTransition from "./auth/AuthTransition"; // ✅ New shared auth layout
 import Home from './pages/Homepage/Home';
 import DiceGame from "./pages/Games/DiceGame/DiceGame";
