@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LandingPage from "./components/LandingPage";
+import LandingPage from "./pages/LandingPage";
 import AuthTransition from "./auth/AuthTransition"; // ✅ New shared auth layout
 import Home from './pages/Homepage/Home';
 import DiceGame from "./pages/Games/DiceGame/DiceGame";
-import Earning from './pages/type_of_game/Earning';
+import Earning from './pages/type_of_game/Earning/Earning';
 import Layout from "./components/Layout";
 
 const AppRoutes = () => (

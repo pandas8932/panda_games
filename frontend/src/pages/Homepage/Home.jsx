@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import Farming from '../type_of_game/Farming';
-import Earning from '../type_of_game/Earning';
-import RoomGames from '../type_of_game/RoomGames';
+import Farming from '../type_of_game/Farming/Farming';
+import Earning from '../type_of_game/Earning/Earning';
+import RoomGames from '../type_of_game/RoomGames/RoomGames';
 import './Home.css'; // Optional
 
 const Home = () => {

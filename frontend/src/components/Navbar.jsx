@@ -59,7 +59,7 @@ const Navbar = () => {
     setIsLoggedIn(false);
     setUsername('');
     setCoins(0);
-    navigate('/signin');
+    navigate('/');
   };
 
   return (
