@@ -40,3 +40,5 @@ Now your frontend (even if it runs on a different port or domain) can talk to th
 
 
 
+games type of game->3folders->games
+landing page->> pages;
