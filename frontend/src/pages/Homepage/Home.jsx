@@ -31,12 +31,20 @@ const Home = () => {
     borderRadius: '5px',
     fontWeight: 'bold',
     transition: 'all 0.3s ease',
+    fontFamily:'Irish Grover',
   });
 
   return (
     <div>
 
-      <div style={{ marginTop: '50px', textAlign: 'center' }}>
+      <div style={{ 
+        marginTop: '50px', 
+        textAlign: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '10px'
+      }}>
         <button style={getButtonStyle('farming')} onClick={() => setSelectedGame('farming')}>
           Farming
         </button>
