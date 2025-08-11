@@ -11,8 +11,9 @@ const earningGames = [
   },
   {
     title: 'Mines',
-    description: 'Gamble your luck on the 5x5 yard',
+    description: 'Navigate through mines to earn coins',
     image: 'https://storage.googleapis.com/kickthe/assets/images/games/mines-hacksawgaming/gb/gbp/tile_large.jpg',
+    route: '/games/minesgame',
   },
   {
     title: 'More game',

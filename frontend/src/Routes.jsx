@@ -3,6 +3,7 @@ import LandingPage from "./pages/LandingPage";
 import AuthTransition from "./auth/AuthTransition"; // ✅ New shared auth layout
 import Home from './pages/Homepage/Home';
 import DiceGame from "./pages/Games/DiceGame/DiceGame";
+import MinesGame from "./pages/Games/MinesGame/MinesGame";
 import Earning from './pages/type_of_game/Earning/Earning';
 import Layout from "./components/Layout";
 
@@ -19,6 +20,7 @@ const AppRoutes = () => (
       <Route element={<Layout />}>
         <Route path="/home" element={<Home />} />
         <Route path="/games/dicegame" element={<DiceGame />} />
+        <Route path="/games/minesgame" element={<MinesGame />} />
         <Route path="/earning" element={<Earning />} />
         {/* Add more routes here */}
       </Route>

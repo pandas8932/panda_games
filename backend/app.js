@@ -13,6 +13,7 @@ app.use(cors());
 
 
 app.use("/api/auth", require("./routes/auth")); 
+app.use("/api/mines", require("./routes/mines"));
 // app.use("/api/dice", require("./routes/diceGame/diceroute"));
 app.get("/", (req, res) => {
   res.send(" API is running...");
