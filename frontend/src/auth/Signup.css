@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Irish+Grover&family=Jaini+Purva&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kablammo&display=swap');
+
 
 
 .signup-wrapper {
@@ -37,7 +39,8 @@ button {
   height: 62px;
   color: white;
   font-size: 30px;
-  font-family: 'Jaini Purva', cursive;
+  font-family: 'Kablammo', cursive;
+    letter-spacing: 2px;
   border: none;
   border-radius: 30px;
   cursor: pointer;
@@ -48,6 +51,15 @@ button {
   transition: background-color 0.3s ease, transform 0.2s ease;
   margin-top: 1rem;
 }
+
+button:hover {
+  background-color: rgba(103, 184, 122, 0.8);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(103, 184, 122, 0.6),
+              0 0 25px rgba(103, 184, 122, 0.4),
+              0 0 35px rgba(103, 184, 122, 0.3);
+}
+
 
 .link-text {
   font-family: 'Karla', sans-serif;
