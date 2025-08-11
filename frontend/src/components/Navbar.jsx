@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-import { FaUserCircle } from 'react-icons/fa';
-import axios from '../api/axios'; // ✅ updated import
+import { FaUserCircle, FaSearch } from 'react-icons/fa';
+import axios from '../api/axios';
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,7 +24,6 @@ const Navbar = () => {
       }
     }
 
-    // 🟡 Listen for coin updates after gameplay
     const handleCoinsUpdate = (e) => {
       if (e.detail?.coins != null) {
         setCoins(e.detail.coins);
@@ -33,7 +32,6 @@ const Navbar = () => {
 
     window.addEventListener('coinsUpdated', handleCoinsUpdate);
 
-    // 🔁 Cleanup on unmount
     return () => {
       window.removeEventListener('coinsUpdated', handleCoinsUpdate);
     };
@@ -64,29 +62,38 @@ const Navbar = () => {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.logo}>
-        <Link to="/" style={styles.link}>GameHub</Link>
-      </div>
-      <div style={styles.centerText}>
-        {isLoggedIn && <span style={styles.greeting}>Hello, {username}!</span>}
-      </div>
-      <div style={styles.links}>
+      {/* Profile Icon (replacing yellow dot) */}
+      <div style={styles.profileIcon}>
         {isLoggedIn ? (
-          <div style={styles.profileContainer}>
-            <FaUserCircle size={24} onClick={() => setShowDropdown(!showDropdown)} style={{ cursor: 'pointer' }} />
-            {showDropdown && (
-              <div style={styles.dropdown}>
-                <p><strong>Coins:</strong> {coins}</p>
-                <button onClick={handleLogout} style={styles.dropdownButton}>Logout</button>
-              </div>
-            )}
-          </div>
+          <FaUserCircle 
+            size={32} 
+            onClick={() => setShowDropdown(!showDropdown)} 
+            style={{ cursor: 'pointer', color: '#FFD700' }} 
+          />
         ) : (
-          <>
-            <Link to="/signin" style={styles.link}>Sign In</Link>
-            <Link to="/signup" style={styles.link}>Sign Up</Link>
-          </>
+          <FaUserCircle size={32} style={{ color: '#FFD700' }} />
         )}
+        {showDropdown && (
+          <div style={styles.dropdown}>
+            <p><strong>Coins:</strong> {coins}</p>
+            <button onClick={handleLogout} style={styles.dropdownButton}>Logout</button>
+          </div>
+        )}
+      </div>
+      
+      {/* Navigation Links */}
+      <div style={styles.navLinks}>
+        <Link to="/" style={styles.navLink}>HOME</Link>
+        <Link to="/" style={styles.navLink}>SHOP</Link>
+        <Link to="/" style={styles.navLink}>HISTORY</Link>
+      </div>
+      
+      {/* Search Bar */}
+      <div style={styles.searchContainer}>
+        <div style={styles.searchBar}>
+          <div style={styles.searchToggle}></div>
+          <span style={styles.searchText}>Find a game</span>
+        </div>
       </div>
     </nav>
   );
@@ -94,41 +101,61 @@ const Navbar = () => {
 
 const styles = {
   nav: {
-    backgroundColor: '#282c34',
-    padding: '10px 20px',
+    backgroundImage: 'url(https://static.vecteezy.com/system/resources/thumbnails/034/858/687/small/abstract-tiger-skin-pattern-background-abstract-art-background-design-with-animal-skin-leopard-cheetah-jaguar-creative-illustration-for-fabric-prints-cover-wrapping-textile-wallpaper-vector.jpg)',
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    padding: '15px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     color: 'white',
     position: 'relative',
+    height: '60px',
   },
-  logo: {
-    fontSize: '20px',
-    fontWeight: 'bold',
+  profileIcon: {
+    flexShrink: 0,
+    position: 'relative',
   },
-  centerText: {
-    fontSize: '16px',
-  },
-  greeting: {
-    color: 'white',
-    marginRight: '20px',
-  },
-  links: {
+  navLinks: {
     display: 'flex',
-    alignItems: 'center',
-    gap: '15px',
+    gap: '30px',
+    marginLeft: '20px',
   },
-  link: {
+  navLink: {
     color: 'white',
     textDecoration: 'none',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    letterSpacing: '1px',
   },
-  profileContainer: {
-    position: 'relative',
+  searchContainer: {
+    marginLeft: 'auto',
+  },
+  searchBar: {
+    backgroundColor: '#E0E0E0', // Light grey
+    borderRadius: '20px',
+    padding: '8px 15px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    minWidth: '150px',
+  },
+  searchToggle: {
+    width: '12px',
+    height: '12px',
+    backgroundColor: 'black',
+    borderRadius: '50%',
+    border: '2px solid white',
+  },
+  searchText: {
+    color: 'black',
+    fontSize: '14px',
   },
   dropdown: {
     position: 'absolute',
     top: '35px',
-    right: 0,
+    left: 0,
     backgroundColor: '#444',
     border: '1px solid #666',
     borderRadius: '5px',

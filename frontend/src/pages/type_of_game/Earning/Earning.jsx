@@ -46,7 +46,8 @@ const styles = {
     display: 'grid',
     gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
     gap: '20px',
-    padding: '20px',
+    padding: '0',
+    backgroundColor: 'transparent',
   },
 };
 

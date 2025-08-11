@@ -6,6 +6,7 @@ const Card = ({ image, title, description, onClick }) => {
       onClick={onClick}
       style={{
         width: '250px',
+        backgroundColor: 'white',
         border: '1px solid #ccc',
         borderRadius: '8px',
         overflow: 'hidden',
