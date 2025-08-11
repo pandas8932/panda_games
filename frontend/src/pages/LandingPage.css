@@ -1,0 +1,125 @@
+/* Same as your original + shrink-active logic */
+.landing-wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.landing-content {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  transition: width 1s ease;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+}
+
+.shrink-active .landing-content {
+  width: 40%;
+}
+
+.shrink-active .text-wrapper {
+  display: none;
+}
+
+/* Animations remain untouched */
+.text-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.panda-text {
+  position: relative;
+  left: -100vw;
+  animation: slideInFromLeft 1s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+.games-text {
+  position: relative;
+  top: -100vh;
+  animation: slideInFromTop 1.5s ease-out forwards;
+  animation-delay: 0.6s;
+  opacity: 0;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    left: -100vw;
+    opacity: 0;
+  }
+  100% {
+    left: 0;
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    top: -100vh;
+    opacity: 0;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.sign-in-button {
+  width: 342px;
+  height: 75px;
+  border-radius: 30px;
+  background-color: black;
+  border: none;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 15px whitesmoke;
+  transition: all 0.3s ease;
+  font-family: 'Konkhmer Sleokchher', cursive;
+  font-size: 62px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+}
+
+.sign-in-button:hover {
+  background-color: rgb(54,158,1);
+   /* backdrop-filter: blur(5px); */
+  transform: scale(1.05);
+  color: white;
+  box-shadow: 0 0 10px green;
+
+}
+
+.panda-text,
+.games-text {
+  font-family: 'Peralta', serif;
+  color: white;
+  font-size: 107px;
+  text-align: center;
+  z-index: 1;
+  margin-left: 28px;
+}
+
+.panda-text::before,
+.games-text::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  color: transparent;
+  -webkit-text-stroke: 15px #000000;
+  filter: blur(1px);
+  opacity: 1;
+}
