@@ -10,10 +10,9 @@ const Layout = () => {
     <>
       {!hideNavbar && <Navbar />}
       <main style={{ 
-        paddingTop: hideNavbar ? 0 : '70px',
         backgroundColor: 'transparent',
         margin: 0,
-        padding: hideNavbar ? 0 : '70px 0 0 0'
+        padding: 0
       }}>
         <Outlet />
       </main>

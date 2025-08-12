@@ -8,14 +8,14 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background-color: #1B5E20;
+  background-color: white;
   min-height: 100vh;
   overflow-x: hidden;
 }
 
 #root {
   min-height: 100vh;
-  background-color: #1B5E20;
+  background-color: white;
 }
 
 input:focus {

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import API from "../../../api/axios";
 
 export default function MinesGame() {
-  const [bet, setBet] = useState(10);
+  const [bet, setBet] = useState(0.00);
   const [mines, setMines] = useState(3);
   const [grid, setGrid] = useState([]);
   const [revealed, setRevealed] = useState([]);
@@ -11,26 +11,47 @@ export default function MinesGame() {
   const [currentMultiplier, setCurrentMultiplier] = useState(1);
   const [totalWinnings, setTotalWinnings] = useState(0);
   const [balance, setBalance] = useState(0);
-  const [history, setHistory] = useState([]);
-  const [showGuide, setShowGuide] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [resultMessage, setResultMessage] = useState("");
+  const [showMultiplierTable, setShowMultiplierTable] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
   
-  // Autoplay features
-  const [rounds, setRounds] = useState(1);
-  const [playing, setPlaying] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [stopAt, setStopAt] = useState(null);
-  const [currentRound, setCurrentRound] = useState(0);
-  
-  const stopAutoplay = useRef(false);
   const winSound = useRef(new Audio("/sounds/win.mp3"));
 
   const GRID_SIZE = 25; // 5x5 grid
   const MAX_MINES = 24;
   const MIN_MINES = 1;
 
+  // Multiplier table data (simplified version)
+  const multiplierTable = [
+    [1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.21, 1.22, 1.23, 24.75],
+    [1.02, 1.04, 1.06, 1.08, 1.10, 1.12, 1.14, 1.16, 1.18, 1.20, 1.22, 1.24, 1.26, 1.28, 1.30, 1.32, 1.34, 1.36, 1.38, 1.40, 1.42, 1.44, 1.46],
+    [1.03, 1.06, 1.09, 1.12, 1.15, 1.18, 1.21, 1.24, 1.27, 1.30, 1.33, 1.36, 1.39, 1.42, 1.45, 1.48, 1.51, 1.54, 1.57, 1.60, 1.63, 1.66],
+    [1.04, 1.08, 1.12, 1.16, 1.20, 1.24, 1.28, 1.32, 1.36, 1.40, 1.44, 1.48, 1.52, 1.56, 1.60, 1.64, 1.68, 1.72, 1.76, 1.80, 1.84],
+    [1.05, 1.10, 1.15, 1.20, 1.25, 1.30, 1.35, 1.40, 1.45, 1.50, 1.55, 1.60, 1.65, 1.70, 1.75, 1.80, 1.85, 1.90, 1.95, 2.00],
+    [1.06, 1.12, 1.18, 1.24, 1.30, 1.36, 1.42, 1.48, 1.54, 1.60, 1.66, 1.72, 1.78, 1.84, 1.90, 1.96, 2.02, 2.08, 2.14],
+    [1.07, 1.14, 1.21, 1.28, 1.35, 1.42, 1.49, 1.56, 1.63, 1.70, 1.77, 1.84, 1.91, 1.98, 2.05, 2.12, 2.19, 2.26],
+    [1.08, 1.16, 1.24, 1.32, 1.40, 1.48, 1.56, 1.64, 1.72, 1.80, 1.88, 1.96, 2.04, 2.12, 2.20, 2.28, 2.36],
+    [1.09, 1.18, 1.27, 1.36, 1.45, 1.54, 1.63, 1.72, 1.81, 1.90, 1.99, 2.08, 2.17, 2.26, 2.35, 2.44],
+    [1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00, 2.10, 2.20, 2.30, 2.40, 2.50],
+    [1.11, 1.22, 1.33, 1.44, 1.55, 1.66, 1.77, 1.88, 1.99, 2.10, 2.21, 2.32, 2.43, 2.54],
+    [1.12, 1.24, 1.36, 1.48, 1.60, 1.72, 1.84, 1.96, 2.08, 2.20, 2.32, 2.44, 2.56],
+    [1.13, 1.26, 1.39, 1.52, 1.65, 1.78, 1.91, 2.04, 2.17, 2.30, 2.43, 2.56],
+    [1.14, 1.28, 1.42, 1.56, 1.70, 1.84, 1.98, 2.12, 2.26, 2.40, 2.54],
+    [1.15, 1.30, 1.45, 1.60, 1.75, 1.90, 2.05, 2.20, 2.35, 2.50],
+    [1.16, 1.32, 1.48, 1.64, 1.80, 1.96, 2.12, 2.28, 2.44],
+    [1.17, 1.34, 1.51, 1.68, 1.85, 2.02, 2.19, 2.36],
+    [1.18, 1.36, 1.54, 1.72, 1.90, 2.08, 2.26],
+    [1.19, 1.38, 1.57, 1.76, 1.95, 2.14],
+    [1.20, 1.40, 1.60, 1.80, 2.00],
+    [1.21, 1.42, 1.63, 1.84],
+    [1.22, 1.44, 1.66],
+    [1.23, 1.46],
+    [24.75]
+  ];
+
   useEffect(() => {
     fetchUser();
-    fetchHistory();
     initializeGrid();
   }, []);
 
@@ -43,18 +64,6 @@ export default function MinesGame() {
       setBalance(res.data.coins);
     } catch (err) {
       console.error("User fetch failed:", err);
-    }
-  };
-
-  const fetchHistory = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const res = await API.get("/mines/history", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setHistory(res.data);
-    } catch (err) {
-      console.error("History fetch failed:", err);
     }
   };
 
@@ -71,6 +80,7 @@ export default function MinesGame() {
     setGameOver(false);
     setCurrentMultiplier(1);
     setTotalWinnings(0);
+    setShowResult(false);
   };
 
   const startGame = async () => {
@@ -126,6 +136,10 @@ export default function MinesGame() {
           revealed: tile.isMine
         }));
         setGrid(updatedGrid);
+        
+        // Show loss message
+        setResultMessage("You hit a mine! Game Over!");
+        setShowResult(true);
       } else if (gameEnded) {
         // All safe tiles revealed
         setGameOver(true);
@@ -135,6 +149,10 @@ export default function MinesGame() {
         if (res.data.win) {
           winSound.current.currentTime = 0;
           winSound.current.play().catch((e) => console.warn("Sound play error:", e));
+          
+          // Show win message
+          setResultMessage(`Congratulations! You won ${bet * multiplier} coins!`);
+          setShowResult(true);
         }
       }
 
@@ -168,11 +186,14 @@ export default function MinesGame() {
       setGameStarted(false);
       setTotalWinnings(res.data.winnings);
       setBalance(res.data.balance);
-      fetchHistory();
 
       if (res.data.win) {
         winSound.current.currentTime = 0;
         winSound.current.play().catch((e) => console.warn("Sound play error:", e));
+        
+        // Show win message
+        setResultMessage(`Great job! You cashed out and won ${res.data.winnings} coins!`);
+        setShowResult(true);
       }
 
       // Notify others that coins changed
@@ -188,63 +209,9 @@ export default function MinesGame() {
     }
   };
 
-  const autoplay = async () => {
-    setPlaying(true);
-    stopAutoplay.current = false;
-    setCurrentRound(0);
-
-    for (let i = 0; i < rounds; i++) {
-      if (stopAutoplay.current) break;
-      
-      setCurrentRound(i + 1);
-      
-      while (paused) await new Promise((r) => setTimeout(r, 300));
-
-      // Start new game
-      const gameData = await startGame();
-      if (!gameData) break;
-
-      // Auto-reveal tiles until we hit a mine or cash out
-      let tilesRevealed = 0;
-      const maxTilesToReveal = Math.floor(Math.random() * 10) + 5; // Random strategy
-      
-      for (let j = 0; j < maxTilesToReveal; j++) {
-        if (stopAutoplay.current) break;
-        
-        // Find unrevealed tiles
-        const unrevealedTiles = grid.filter(tile => !revealed.includes(tile.id));
-        if (unrevealedTiles.length === 0) break;
-        
-        // Pick random tile
-        const randomTile = unrevealedTiles[Math.floor(Math.random() * unrevealedTiles.length)];
-        const result = await revealTile(randomTile.id);
-        
-        if (!result || result.isMine) break;
-        
-        tilesRevealed++;
-        await new Promise((r) => setTimeout(r, 200)); // Small delay between reveals
-      }
-
-      // Cash out if we haven't hit a mine
-      if (!gameOver) {
-        await cashOut();
-      }
-
-      if (stopAt && balance >= stopAt) {
-        alert(`🎯 Target ${stopAt} coins reached. Stopping.`);
-        break;
-      }
-
-      if (balance < 100) {
-        alert(`⚠️ Balance dropped below 100. Stopping.`);
-        break;
-      }
-
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-
-    setPlaying(false);
-    setCurrentRound(0);
+  const handleRestart = () => {
+    setShowResult(false);
+    initializeGrid();
   };
 
   const renderTile = (tile) => {
@@ -261,7 +228,7 @@ export default function MinesGame() {
             ? (tile.isMine ? '#ff4444' : '#44ff44') 
             : isGameOverMine 
               ? '#ff4444' 
-              : '#2a2a2a',
+              : '#333',
           cursor: (gameStarted && !gameOver && !isRevealed) ? 'pointer' : 'default',
           opacity: isRevealed || isGameOverMine ? 1 : 0.8,
         }}
@@ -281,180 +248,209 @@ export default function MinesGame() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.panel}>
-        <h2 style={styles.title}>💣 Mines Game</h2>
+      <div style={styles.gamePanel}>
+        <div style={styles.content}>
+          {/* Left Side - Controls */}
+          <div style={styles.controls}>
+            {/* Amount Section */}
+            <div style={styles.section}>
+              <label style={styles.label}>Amount</label>
+              <div style={styles.amountContainer}>
+                <input
+                  type="number"
+                  value={bet}
+                  onChange={(e) => setBet(parseFloat(e.target.value) || 0)}
+                  style={styles.input}
+                  disabled={gameStarted}
+                  step="0.01"
+                />
+                <div style={styles.currencyIcon}>G</div>
+              </div>
+              <div style={styles.amountButtons}>
+                <button
+                  onClick={() => setBet(bet / 2)}
+                  style={styles.smallButton}
+                  disabled={gameStarted}
+                >
+                  ½
+                </button>
+                <button
+                  onClick={() => setBet(bet * 2)}
+                  style={styles.smallButton}
+                  disabled={gameStarted}
+                >
+                  2x
+                </button>
+              </div>
+            </div>
 
-        <div style={styles.fieldRow}>
-          <label>💸 Bet:</label>
-          <input
-            type="number"
-            value={bet}
-            onChange={(e) => setBet(+e.target.value)}
-            style={styles.input}
-            disabled={gameStarted}
-          />
-          <button
-            onClick={() => setBet(bet * 2)}
-            style={styles.button("#ffaa00")}
-            disabled={gameStarted}
-          >
-            2x
-          </button>
-        </div>
+            {/* Mines Section */}
+            <div style={styles.section}>
+              <label style={styles.label}>Mines</label>
+              <select
+                value={mines}
+                onChange={(e) => setMines(parseInt(e.target.value))}
+                style={styles.select}
+                disabled={gameStarted}
+              >
+                {Array.from({ length: MAX_MINES }, (_, i) => i + 1).map(num => (
+                  <option key={num} value={num}>{num}</option>
+                ))}
+              </select>
+            </div>
 
-        <div style={styles.fieldRow}>
-          <label>💣 Mines:</label>
-          <input
-            type="range"
-            min={MIN_MINES}
-            max={MAX_MINES}
-            value={mines}
-            onChange={(e) => setMines(+e.target.value)}
-            style={styles.slider}
-            disabled={gameStarted}
-          />
-          <span style={styles.mineCount}>{mines}</span>
-        </div>
-
-        <div style={styles.field}>
-          <label>🔁 Auto Play Rounds:</label>
-          <input
-            type="number"
-            value={rounds}
-            onChange={(e) => setRounds(+e.target.value)}
-            style={styles.input}
-            disabled={playing}
-          />
-        </div>
-
-        <div style={styles.field}>
-          <label>🎯 Stop at Balance:</label>
-          <input
-            type="number"
-            value={stopAt || ""}
-            onChange={(e) => setStopAt(+e.target.value)}
-            style={styles.input}
-            disabled={playing}
-          />
-        </div>
-
-        <div style={styles.buttons}>
-          {!gameStarted && !playing && (
+            {/* Play Button */}
             <button
               onClick={startGame}
-              style={styles.button("#00e0ff")}
+              disabled={gameStarted}
+              style={styles.playButton}
             >
-              Start Game 💣
+              Play
             </button>
-          )}
-          
-          {gameStarted && !gameOver && (
+
+            {/* Multiplier Table Button */}
             <button
-              onClick={cashOut}
-              style={styles.button("#00ff88")}
+              onClick={() => setShowMultiplierTable(!showMultiplierTable)}
+              style={styles.tableButton}
             >
-              Cash Out 💰
+              {showMultiplierTable ? "Hide" : "Show"} Multiplier Table
             </button>
-          )}
-          
-          <button
-            onClick={autoplay}
-            disabled={playing || gameStarted}
-            style={styles.button("#00ff88")}
-          >
-            Auto Play
-          </button>
-          
-          <button
-            onClick={() => setPaused(!paused)}
-            disabled={!playing}
-            style={styles.button("#ffaa00")}
-          >
-            {paused ? "▶️ Resume" : "⏸️ Pause"}
-          </button>
-          
-          <button
-            onClick={() => {
-              stopAutoplay.current = true;
-              setPaused(false);
-            }}
-            disabled={!playing}
-            style={styles.button("#ff0044")}
-          >
-            ⛔ Stop
-          </button>
-        </div>
 
-        {playing && (
-          <div style={styles.statusBox}>
-            <p>🔄 Auto Playing: Round {currentRound}/{rounds}</p>
-            <p>💰 Balance: {balance} coins</p>
+            {/* Instructions Button */}
+            <button
+              onClick={() => setShowInstructions(true)}
+              style={styles.instructionsButton}
+            >
+              How to Play
+            </button>
+
+            {/* Game Status */}
+            {gameStarted && !gameOver && (
+              <div style={styles.statusBox}>
+                <p>💎 Current Multiplier: ×{currentMultiplier}</p>
+                <p>💰 Potential Win: {bet * currentMultiplier} coins</p>
+                <button
+                  onClick={cashOut}
+                  style={styles.cashoutButton}
+                >
+                  Cash Out 💰
+                </button>
+              </div>
+            )}
           </div>
-        )}
 
-        {gameStarted && !gameOver && (
-          <div style={styles.statusBox}>
-            <p>💎 Current Multiplier: ×{currentMultiplier}</p>
-            <p>💰 Potential Win: {bet * currentMultiplier} coins</p>
-          </div>
-        )}
-
-        {gameOver && (
-          <div style={styles.resultBox}>
-            <p>{totalWinnings > 0 ? "🎉 You Won!" : "❌ You Lost"}</p>
-            <p>💰 Winnings: {totalWinnings} coins</p>
-            <p>💰 Balance: {balance} coins</p>
-          </div>
-        )}
-
-        {/* Mines Grid */}
-        <div style={styles.gridContainer}>
-          <div style={styles.grid}>
-            {grid.map(renderTile)}
+          {/* Right Side - Game Grid */}
+          <div style={styles.gameArea}>
+            <div style={styles.gridContainer}>
+              <div style={styles.grid}>
+                {grid.map(renderTile)}
+              </div>
+            </div>
           </div>
         </div>
 
-        <hr style={{ margin: "20px 0", borderColor: "#333" }} />
-
-        <button
-          onClick={() => setShowGuide(!showGuide)}
-          style={styles.button("#4444ff")}
-        >
-          {showGuide ? "❌ Hide Guide" : "❓ How to Play"}
-        </button>
-
-        {showGuide && (
-          <div style={styles.guideBox}>
-            <h4>📘 How Mines Game Works:</h4>
-            <ul>
-              <li>Set your bet and choose number of mines (1-24)</li>
-              <li>Click tiles to reveal them - avoid the mines!</li>
-              <li>Each safe tile increases your multiplier</li>
-              <li>Cash out anytime to collect your winnings</li>
-              <li>Hit a mine and you lose your bet</li>
-              <li>More mines = higher risk = higher potential payouts</li>
-            </ul>
+        {/* Multiplier Table */}
+        {showMultiplierTable && (
+          <div style={styles.tableContainer}>
+            <h3 style={styles.tableTitle}>MINES</h3>
+            <div style={styles.tableWrapper}>
+              <div style={styles.tableHeader}>
+                <div style={styles.cornerCell}></div>
+                {Array.from({ length: 24 }, (_, i) => (
+                  <div key={i} style={styles.headerCell}>{i + 1}</div>
+                ))}
+              </div>
+              <div style={styles.tableBody}>
+                {multiplierTable.map((row, rowIndex) => (
+                  <div key={rowIndex} style={styles.tableRow}>
+                    <div style={styles.rowLabel}>{rowIndex + 1}</div>
+                    {row.map((value, colIndex) => (
+                      <div key={colIndex} style={styles.tableCell}>
+                        {value.toFixed(2)}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
-
-        <div style={styles.historyBox}>
-          <h4>🕒 Game History (Last 10):</h4>
-          <ul style={{ fontSize: "14px", paddingLeft: "20px" }}>
-            {history.map((game, i) => (
-              <li key={i}>
-                Bet {game.bet} | Mines {game.mines} | Tiles {game.tilesRevealed} | 
-                Multiplier ×{game.multiplier} → {game.win ? "✅ Win" : "❌ Lose"} | 
-                💰 {game.win ? `+${game.payout}` : `-${game.bet}`}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div style={styles.disclaimer}>
-          ⚠️ This game is for entertainment purposes only. Play responsibly. No
-          real money is involved.
-        </div>
       </div>
+
+      {/* Result Popup */}
+      {showResult && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.popup}>
+            <h3 style={styles.popupTitle}>
+              {resultMessage.includes("won") ? "🎉 Victory!" : "💥 Game Over!"}
+            </h3>
+            <p style={styles.popupMessage}>{resultMessage}</p>
+            <div style={styles.popupButtons}>
+              <button
+                onClick={handleRestart}
+                style={styles.popupButton}
+              >
+                Play Again
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Instructions Modal */}
+      {showInstructions && (
+        <div style={styles.popupOverlay}>
+          <div style={styles.instructionsPopup}>
+            <h3 style={styles.popupTitle}>💎 How to Play Mines</h3>
+            <div style={styles.instructionsContent}>
+              <div style={styles.instructionSection}>
+                <h4 style={styles.instructionSubtitle}>🎯 Objective</h4>
+                <p>Reveal safe tiles while avoiding mines to earn multipliers and cash out your winnings!</p>
+              </div>
+              
+              <div style={styles.instructionSection}>
+                <h4 style={styles.instructionSubtitle}>🎮 Gameplay</h4>
+                <ul style={styles.instructionList}>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Set your bet amount and choose number of mines (1-24)</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Click "Play" to start the game</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Click tiles to reveal them - avoid the mines!</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Each safe tile increases your multiplier</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Cash out anytime to collect your winnings</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Hit a mine and you lose your bet</li>
+                </ul>
+              </div>
+
+              <div style={styles.instructionSection}>
+                <h4 style={styles.instructionSubtitle}>💰 Multipliers</h4>
+                <ul style={styles.instructionList}>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>More mines = higher risk = higher potential payouts</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>More diamonds revealed = higher multiplier</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Check the multiplier table for exact values</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Winnings = Bet × Current Multiplier</li>
+                </ul>
+              </div>
+
+              <div style={styles.instructionSection}>
+                <h4 style={styles.instructionSubtitle}>🎲 Strategy</h4>
+                <ul style={styles.instructionList}>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Start with fewer mines to learn the game</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Cash out early to secure smaller wins</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Risk more mines for bigger potential payouts</li>
+                  <li style={{ marginBottom: "8px", color: "#ccc", fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>Don't get greedy - know when to stop!</li>
+                </ul>
+              </div>
+            </div>
+            <div style={styles.popupButtons}>
+              <button
+                onClick={() => setShowInstructions(false)}
+                style={styles.popupButton}
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -462,87 +458,187 @@ export default function MinesGame() {
 const styles = {
   container: {
     minHeight: "100vh",
-    padding: "30px",
+    padding: "0",
     color: "#fff",
-    fontFamily: "sans-serif",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    backgroundColor: "#1a1a2e",
   },
-  panel: {
-    maxWidth: "800px",
-    margin: "auto",
-    backgroundColor: "#1c1c1c",
-    borderRadius: "12px",
-    padding: "25px",
-    boxShadow: "0 0 10px rgba(0, 224, 255, 0.2)",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "20px",
-    color: "#00e0ff",
-  },
-  field: { marginBottom: "15px" },
-  fieldRow: {
+  gamePanel: {
+    width: "100%",
+    maxWidth: "1400px",
+    margin: "0 auto",
+    backgroundColor: "#16213e",
+    padding: "30px",
     display: "flex",
-    gap: "10px",
+    flexDirection: "column",
+  },
+  content: {
+    display: "flex",
+    gap: "40px",
+    alignItems: "flex-start",
+    justifyContent: "center",
+  },
+  controls: {
+    flex: "0 0 220px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "25px",
+    backgroundColor: "#1a1a2e",
+    padding: "25px",
+    borderRadius: "12px",
+    border: "1px solid #2a2a2a",
+  },
+  section: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  },
+  label: {
+    fontSize: "14px",
+    color: "#ccc",
+    fontWeight: "500",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  amountContainer: {
+    position: "relative",
+    display: "flex",
     alignItems: "center",
-    marginBottom: "15px",
   },
   input: {
-    flex: 1,
-    padding: "8px",
+    width: "100%",
+    padding: "16px 40px 16px 16px",
     backgroundColor: "#2a2a2a",
     border: "1px solid #444",
+    borderRadius: "8px",
     color: "white",
-    borderRadius: "6px",
-    fontSize: "14px",
+    fontSize: "16px",
+    outline: "none",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   },
-  slider: {
-    flex: 1,
-    margin: "0 10px",
-  },
-  mineCount: {
-    minWidth: "30px",
-    textAlign: "center",
+  currencyIcon: {
+    position: "absolute",
+    right: "16px",
+    width: "20px",
+    height: "20px",
+    backgroundColor: "#ffd700",
+    borderRadius: "50%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "12px",
     fontWeight: "bold",
-    color: "#ff4444",
+    color: "black",
   },
-  button: (color) => ({
+  amountButtons: {
+    display: "flex",
+    gap: "8px",
+  },
+  smallButton: {
     flex: 1,
-    padding: "10px",
+    padding: "12px 12px",
+    backgroundColor: "#2a2a2a",
+    border: "1px solid #444",
+    borderRadius: "6px",
+    color: "white",
+    cursor: "pointer",
     fontSize: "14px",
-    backgroundColor: color,
-    color: "#000",
+    fontWeight: "500",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  select: {
+    width: "100%",
+    padding: "16px",
+    backgroundColor: "#2a2a2a",
+    border: "1px solid #444",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "16px",
+    outline: "none",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  playButton: {
+    padding: "18px",
+    backgroundColor: "#00ff88",
     border: "none",
     borderRadius: "8px",
+    color: "black",
+    fontSize: "18px",
+    fontWeight: "600",
     cursor: "pointer",
-    minWidth: "100px",
-    fontWeight: "bold",
-  }),
-  buttons: {
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    marginBottom: "20px",
+    transition: "all 0.2s ease",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   },
-  gridContainer: {
+  tableButton: {
+    padding: "12px",
+    backgroundColor: "#2a2a2a",
+    border: "1px solid #444",
+    borderRadius: "6px",
+    color: "white",
+    fontSize: "14px",
+    fontWeight: "500",
+    cursor: "pointer",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  instructionsButton: {
+    padding: "12px",
+    backgroundColor: "#2a2a2a",
+    border: "1px solid #444",
+    borderRadius: "6px",
+    color: "white",
+    fontSize: "14px",
+    fontWeight: "500",
+    cursor: "pointer",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  statusBox: {
+    backgroundColor: "#2a2a2a",
+    padding: "15px",
+    borderRadius: "8px",
+    fontSize: "14px",
+    textAlign: "center",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    border: "1px solid #444",
+  },
+  cashoutButton: {
+    marginTop: "10px",
+    padding: "10px 20px",
+    backgroundColor: "#ffc107",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "600",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  gameArea: {
+    flex: 1,
     display: "flex",
     justifyContent: "center",
-    margin: "20px 0",
+    alignItems: "center",
+    maxWidth: "700px",
+  },
+  gridContainer: {
+    backgroundColor: "#1a1a2e",
+    padding: "30px",
+    borderRadius: "12px",
+    border: "1px solid #2a2a2a",
   },
   grid: {
     display: "grid",
     gridTemplateColumns: "repeat(5, 1fr)",
-    gap: "8px",
-    maxWidth: "400px",
+    gap: "12px",
+    maxWidth: "550px",
   },
   tile: {
-    width: "60px",
-    height: "60px",
+    width: "90px",
+    height: "90px",
     border: "2px solid #444",
-    borderRadius: "8px",
+    borderRadius: "10px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "18px",
+    fontSize: "20px",
     fontWeight: "bold",
     transition: "all 0.3s ease",
   },
@@ -551,43 +647,158 @@ const styles = {
     fontWeight: "bold",
   },
   mine: {
+    fontSize: "28px",
+  },
+  tableContainer: {
+    marginTop: "30px",
+    backgroundColor: "#1a1a2e",
+    borderRadius: "12px",
+    padding: "20px",
+    border: "1px solid #2a2a2a",
+  },
+  tableTitle: {
     fontSize: "24px",
-  },
-  statusBox: {
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "white",
     textAlign: "center",
-    fontSize: "16px",
-    backgroundColor: "#222",
-    padding: "10px",
-    borderRadius: "10px",
-    marginTop: "10px",
   },
-  resultBox: {
-    textAlign: "center",
-    fontSize: "16px",
-    backgroundColor: "#222",
-    padding: "10px",
-    borderRadius: "10px",
-    marginTop: "10px",
+  tableWrapper: {
+    overflowX: "auto",
   },
-  guideBox: {
-    marginTop: "20px",
-    backgroundColor: "#222",
-    padding: "15px",
-    borderRadius: "10px",
+  tableHeader: {
+    display: "flex",
+    borderBottom: "1px solid #444",
+  },
+  cornerCell: {
+    width: "60px",
+    height: "40px",
+    backgroundColor: "#2a2a2a",
+    borderRight: "1px solid #444",
+    borderBottom: "1px solid #444",
+  },
+  headerCell: {
+    width: "80px",
+    height: "40px",
+    backgroundColor: "#ff4444",
+    borderRight: "1px solid #444",
+    borderBottom: "1px solid #444",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: "14px",
-    lineHeight: 1.6,
+    fontWeight: "bold",
+    color: "white",
   },
-  historyBox: {
-    marginTop: "20px",
-    backgroundColor: "#1b1b1b",
-    padding: "15px",
-    borderRadius: "10px",
+  tableBody: {
+    display: "flex",
+    flexDirection: "column",
   },
-  disclaimer: {
-    marginTop: "20px",
+  tableRow: {
+    display: "flex",
+  },
+  rowLabel: {
+    width: "60px",
+    height: "40px",
+    backgroundColor: "#00ff88",
+    borderRight: "1px solid #444",
+    borderBottom: "1px solid #444",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "black",
+  },
+  tableCell: {
+    width: "80px",
+    height: "40px",
+    backgroundColor: "#333",
+    borderRight: "1px solid #444",
+    borderBottom: "1px solid #444",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     fontSize: "12px",
-    color: "#aaa",
-    borderTop: "1px solid #333",
-    paddingTop: "10px",
+    color: "black",
+  },
+  popupOverlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  },
+  popup: {
+    backgroundColor: "#2a2a2a",
+    borderRadius: "12px",
+    padding: "30px",
+    textAlign: "center",
+    maxWidth: "400px",
+    border: "1px solid #444",
+  },
+  popupTitle: {
+    fontSize: "24px",
+    marginBottom: "15px",
+    color: "#fff",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  popupMessage: {
+    fontSize: "16px",
+    marginBottom: "20px",
+    color: "#ccc",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  popupButtons: {
+    display: "flex",
+    gap: "10px",
+    justifyContent: "center",
+  },
+  popupButton: {
+    padding: "12px 24px",
+    backgroundColor: "#00ff88",
+    border: "none",
+    borderRadius: "6px",
+    color: "black",
+    fontSize: "16px",
+    fontWeight: "600",
+    cursor: "pointer",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  instructionsPopup: {
+    backgroundColor: "#2a2a2a",
+    borderRadius: "12px",
+    padding: "30px",
+    textAlign: "center",
+    maxWidth: "400px",
+    border: "1px solid #444",
+  },
+  instructionsContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+    marginBottom: "20px",
+  },
+  instructionSection: {
+    textAlign: "left",
+    paddingLeft: "20px",
+  },
+  instructionSubtitle: {
+    fontSize: "18px",
+    fontWeight: "bold",
+    marginBottom: "10px",
+    color: "#00ff88",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  instructionList: {
+    listStyle: "none",
+    padding: "0",
+    margin: "0",
+    textAlign: "left",
   },
 };
