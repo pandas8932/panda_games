@@ -101,7 +101,7 @@ const Navbar = () => {
 
 const styles = {
   nav: {
-    backgroundImage: 'url(https://static.vecteezy.com/system/resources/thumbnails/034/858/687/small/abstract-tiger-skin-pattern-background-abstract-art-background-design-with-animal-skin-leopard-cheetah-jaguar-creative-illustration-for-fabric-prints-cover-wrapping-textile-wallpaper-vector.jpg)',
+    backgroundImage: 'url(https://res.cloudinary.com/diilqdk7o/image/upload/v1754966408/ChatGPT_Image_Aug_12_2025_08_07_52_AM_fen2lj.png)',
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
