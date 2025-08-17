@@ -34,7 +34,7 @@
 }
 
 .signin-wrapper .form-box h2 {
-  font-size: 56px;
+  font-size: 50px;
   font-family: 'Irish Grover', cursive;
   color: #fff;
   text-align: center;
@@ -92,12 +92,15 @@
 
 .signin-wrapper .link-text {
   font-family: 'Karla', sans-serif;
-  font-size: 23px;
-  margin-top: 2rem;
+  font-size: 25px; /* adjust size if needed */
+  margin-top: 1.5rem;
+  margin-left: 2rem;
   text-align: center;
   color: white;
   letter-spacing: 0.5px;
-  position: relative;
+
+  display: inline-block;
+  white-space: nowrap;   /* ✅ prevents wrapping */
 }
 
 .signin-wrapper .link {
@@ -107,8 +110,8 @@
   cursor: pointer;
   text-decoration: none;
   transition: all 0.3s ease;
-  position: relative;
 }
+
 
 .signin-wrapper .link:hover {
   color: #ffffff;

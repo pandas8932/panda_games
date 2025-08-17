@@ -6,6 +6,7 @@ const farmingGames = [
     title: 'Tic-Tac-Toe',
     description: 'play this simple game to earn coins',
     image: 'https://m.media-amazon.com/images/I/411RqsooQ3L.png',
+    
   },
   {
     title: 'Chess Arena',

@@ -6,7 +6,7 @@ const earningGames = [
   {
     title: 'Dice Game',
     description: 'Throw the dice and test your Luck',
-    image: 'https://play-lh.googleusercontent.com/wqSvyBbC4IQlEXpLrqKYEckNfoIwaUK3lasg_zVRJ3T5Ufqgq8y_PlIMKa5V6fWqgvPd',
+    image: 'https://res.cloudinary.com/diilqdk7o/image/upload/v1755439487/%E0%A4%B8%E0%A4%82%E0%A4%96%E0%A5%8D%E0%A4%AF%E0%A4%BE_%E0%A4%95%E0%A5%87_%E0%A4%98%E0%A5%87%E0%A4%B0%E0%A5%87_uxihgc.png',
     route: '/games/dicegame',
   },
   {
