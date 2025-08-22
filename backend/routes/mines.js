@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const Game = require("../models/game");
+const GameHistory = require("../models/gameHistory");
 const auth = require("../middlewares/user");
 
 // In-memory storage for active games (in production, use Redis or database)
 const activeGames = new Map();
+
+// Rate limiting for tile reveals (prevent rapid clicking)
+const lastRevealTime = new Map();
 
 // Multiplier table data (diamonds x bombs) - exact values from user data
 const multiplierTable = [
@@ -100,14 +105,24 @@ const generateGrid = (mines) => {
   return grid;
 };
 
+// Create client-safe grid (without mine information)
+const createClientGrid = (grid, revealedTiles) => {
+  return grid.map(tile => ({
+    id: tile.id,
+    revealed: revealedTiles.includes(tile.id),
+    isMine: revealedTiles.includes(tile.id) ? tile.isMine : false, // Only reveal mine info if tile was revealed
+    multiplier: tile.multiplier
+  }));
+};
+
 // Start a new mines game
 router.post("/start", auth, async (req, res) => {
   try {
     const { bet, mines } = req.body;
     const userId = req.user.id;
 
-    // Validate input
-    if (!bet || bet < 1 || bet > 10000) {
+    // Validate input - allow 0 bet
+    if (bet === undefined || bet < 0 || bet > 10000) {
       return res.status(400).json({ message: "Invalid bet amount" });
     }
     
@@ -115,15 +130,21 @@ router.post("/start", auth, async (req, res) => {
       return res.status(400).json({ message: "Invalid number of mines" });
     }
 
-    // Check if user has enough balance
+    // Check if user has enough balance (allow 0 bet)
     const user = await User.findById(userId);
-    if (!user || user.coins < bet) {
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    
+    if (bet > 0 && user.coins < bet) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    // Deduct bet from balance
-    user.coins -= bet;
-    await user.save();
+    // Deduct bet from balance (only if bet > 0)
+    if (bet > 0) {
+      user.coins -= bet;
+      await user.save();
+    }
 
     // Generate game grid
     const grid = generateGrid(mines);
@@ -144,7 +165,7 @@ router.post("/start", auth, async (req, res) => {
     res.json({
       success: true,
       gameId,
-      grid,
+      grid: createClientGrid(grid, []), // Send client-safe grid
       balance: user.coins,
       message: "Game started successfully"
     });
@@ -177,6 +198,14 @@ router.post("/reveal", auth, async (req, res) => {
       return res.status(400).json({ message: "No active game found" });
     }
 
+    // Rate limiting - prevent rapid clicking
+    const now = Date.now();
+    const lastReveal = lastRevealTime.get(userId) || 0;
+    if (now - lastReveal < 500) { // 500ms minimum between reveals
+      return res.status(429).json({ message: "Please wait before revealing another tile" });
+    }
+    lastRevealTime.set(userId, now);
+
     // Validate tile
     if (tileId < 0 || tileId >= 25 || game.revealedTiles.includes(tileId)) {
       return res.status(400).json({ message: "Invalid tile" });
@@ -207,7 +236,7 @@ router.post("/reveal", auth, async (req, res) => {
         win: false,
         multiplier: game.currentMultiplier,
         newBalance: user.coins,
-        grid: game.grid,
+        grid: createClientGrid(game.grid, game.revealedTiles), // Send client-safe grid
         message: "You hit a mine! Game over."
       });
 
@@ -245,7 +274,7 @@ router.post("/reveal", auth, async (req, res) => {
           multiplier: newMultiplier,
           newBalance: user.coins,
           winnings,
-          grid: game.grid,
+          grid: createClientGrid(game.grid, game.revealedTiles), // Send client-safe grid
           message: "Congratulations! You revealed all safe tiles!"
         });
       } else {
@@ -258,7 +287,7 @@ router.post("/reveal", auth, async (req, res) => {
           gameEnded: false,
           multiplier: newMultiplier,
           newBalance: user.coins,
-          grid: game.grid,
+          grid: createClientGrid(game.grid, game.revealedTiles), // Send client-safe grid
           message: "Safe tile revealed!"
         });
       }
@@ -327,32 +356,37 @@ router.post("/cashout", auth, async (req, res) => {
 // Get game history
 router.get("/history", auth, async (req, res) => {
   try {
-    const userId = req.user.id;
-    
-    // In a real app, you'd have a separate history collection
-    // For now, we'll return a mock history
-    const history = [
-      {
-        bet: 10,
-        mines: 3,
-        tilesRevealed: 5,
-        multiplier: 2.5,
-        win: true,
-        payout: 25,
-        timestamp: new Date()
-      },
-      {
-        bet: 20,
-        mines: 5,
-        tilesRevealed: 3,
-        multiplier: 1.8,
-        win: true,
-        payout: 36,
-        timestamp: new Date(Date.now() - 3600000)
-      }
-    ];
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
 
-    res.json(history);
+    const minesGame = await Game.findOne({ route: '/games/minesgame' });
+    if (!minesGame) {
+      return res.status(404).json({ message: 'Mines game not found' });
+    }
+
+    const history = await GameHistory.find({ 
+      userId: req.user.id,
+      gameId: minesGame._id 
+    })
+      .sort({ playedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await GameHistory.countDocuments({ 
+      userId: req.user.id,
+      gameId: minesGame._id 
+    });
+
+    res.json({
+      history,
+      pagination: {
+        currentPage: page,
+        totalPages: Math.ceil(total / limit),
+        totalItems: total,
+        itemsPerPage: limit
+      }
+    });
 
   } catch (error) {
     console.error("Mines history error:", error);
@@ -360,10 +394,38 @@ router.get("/history", auth, async (req, res) => {
   }
 });
 
-// Helper function to save game history (in production, use a database)
+// Helper function to save game history
 const saveGameHistory = async (userId, bet, mines, tilesRevealed, multiplier, win, payout) => {
-  // In a real app, save to a history collection
-  console.log(`Game history: User ${userId}, Bet ${bet}, Mines ${mines}, Tiles ${tilesRevealed}, Multiplier ${multiplier}, Win ${win}, Payout ${payout}`);
+  try {
+    // Get mines game info
+    const minesGame = await Game.findOne({ route: '/games/minesgame' });
+    if (!minesGame) {
+      console.error('Mines game not found in database');
+      return;
+    }
+
+    // Create game history record
+    const gameHistory = new GameHistory({
+      userId: userId,
+      gameId: minesGame._id,
+      gameName: minesGame.title,
+      betAmount: bet,
+      result: win ? 'win' : 'loss',
+      coinsWon: win ? payout : 0,
+      coinsLost: win ? 0 : bet,
+      gameData: {
+        mines: mines,
+        tilesRevealed: tilesRevealed,
+        multiplier: multiplier,
+        payout: payout
+      }
+    });
+
+    await gameHistory.save();
+    console.log(`Game history saved: User ${userId}, Bet ${bet}, Mines ${mines}, Tiles ${tilesRevealed}, Multiplier ${multiplier}, Win ${win}, Payout ${payout}`);
+  } catch (error) {
+    console.error('Error saving game history:', error);
+  }
 };
 
 module.exports = router;

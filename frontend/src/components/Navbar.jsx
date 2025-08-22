@@ -83,9 +83,9 @@ const Navbar = () => {
       
       {/* Navigation Links */}
       <div style={styles.navLinks}>
-        <Link to="/" style={styles.navLink}>HOME</Link>
+        <Link to="/home" style={styles.navLink}>HOME</Link>
         <Link to="/" style={styles.navLink}>SHOP</Link>
-        <Link to="/" style={styles.navLink}>HISTORY</Link>
+        <Link to="/history" style={styles.navLink}>HISTORY</Link>
       </div>
       
       {/* Search Bar */}

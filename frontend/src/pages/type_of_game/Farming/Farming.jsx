@@ -1,29 +1,63 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Card from '../../../components/Card';
-
-const farmingGames = [
-  {
-    title: 'Tic-Tac-Toe',
-    description: 'play this simple game to earn coins',
-    image: 'https://m.media-amazon.com/images/I/411RqsooQ3L.png',
-    
-  },
-  {
-    title: 'Chess Arena',
-    description: 'Play with AI, Real world players to earn coins',
-    image: 'https://imgs.search.brave.com/zgAaBELdS7bRBNlMoOeNa-vu1Kpvmdk-me0PygQthGE/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzIxLzY0/LzUzLzIxNjQ1M2Fm/MGUwYWQ5ZmIyYTVi/NjZjM2EzM2VhYTdk/LmpwZw',
-  },{
-    title:'More game',
-    description:'More games to be added in the future',
-    image:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJygaAX3kSc2zVSUp5R4Jn7KK0dMtSQViX3Q&s'
-  }
-];
+import { getGamesByCategory } from '../../../api/games';
 
 const Farming = () => {
+  const navigate = useNavigate();
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setLoading(true);
+        const gamesData = await getGamesByCategory('farming');
+        setGames(gamesData);
+      } catch (err) {
+        setError('Failed to load games');
+        console.error('Error fetching farming games:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
+
+  const handleCardClick = (game) => {
+    if (game.route) {
+      if (game.route === '/games/sudoku') {
+        navigate('/games/sudoku-pregame');
+      } else {
+        navigate(game.route);
+      }
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.loading}>Loading games...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.container}>
-      {farmingGames.map((game, idx) => (
-        <Card key={idx} {...game} />
+      {games.map((game, idx) => (
+        <div key={game._id || idx} onClick={() => handleCardClick(game)} style={{ cursor: game.route ? 'pointer' : 'default' }}>
+          <Card {...game} />
+        </div>
       ))}
     </div>
   );
@@ -37,6 +71,20 @@ const styles = {
     padding: '0',
     backgroundColor: 'transparent',
   },
+  loading: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: '18px',
+    padding: '40px'
+  },
+  error: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    color: '#ff6b6b',
+    fontSize: '16px',
+    padding: '40px'
+  }
 };
 
 export default Farming;

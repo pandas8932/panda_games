@@ -1,0 +1,190 @@
+/* GameHistory.css */
+.game-history-container {
+  min-height: 100vh;
+  padding: 20px;
+  background-color: transparent;
+  color: white;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.game-history-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-history-title {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  color: #FFD700;
+}
+
+.game-history-subtitle {
+  font-size: 1.1rem;
+  color: #ccc;
+  margin: 0;
+}
+
+.game-history-loading {
+  text-align: center;
+  font-size: 18px;
+  padding: 40px;
+}
+
+.game-history-error {
+  text-align: center;
+  color: #ff6b6b;
+  font-size: 16px;
+  padding: 40px;
+}
+
+.game-history-empty {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.game-history-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.game-history-stat-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.game-history-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.game-history-table-container {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 20px;
+}
+
+.game-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.game-history-table th {
+  background-color: rgba(255, 215, 0, 0.2);
+  padding: 15px;
+  text-align: center;
+  font-weight: bold;
+  color: #FFD700;
+}
+
+.game-history-table td {
+  padding: 15px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.game-history-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+.game-history-game-cell {
+  padding: 15px;
+  text-align: left;
+}
+
+.game-history-game-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-history-game-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  object-fit: cover;
+}
+
+.game-history-result-badge {
+  padding: 5px 10px;
+  border-radius: 15px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.game-history-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.game-history-pagination-button {
+  padding: 10px 20px;
+  background-color: rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.game-history-pagination-button:hover:not(:disabled) {
+  background-color: rgba(255, 215, 0, 0.3);
+}
+
+.game-history-pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-history-page-info {
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .game-history-container {
+    padding: 10px;
+  }
+  
+  .game-history-title {
+    font-size: 2rem;
+  }
+  
+  .game-history-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .game-history-table-container {
+    overflow-x: auto;
+  }
+  
+  .game-history-table {
+    min-width: 600px;
+  }
+  
+  .game-history-game-info {
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .game-history-pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

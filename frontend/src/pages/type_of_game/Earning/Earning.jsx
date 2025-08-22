@@ -1,29 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '../../../components/Card';
-
-const earningGames = [
-  {
-    title: 'Dice Game',
-    description: 'Throw the dice and test your Luck',
-    image: 'https://res.cloudinary.com/diilqdk7o/image/upload/v1755439487/%E0%A4%B8%E0%A4%82%E0%A4%96%E0%A5%8D%E0%A4%AF%E0%A4%BE_%E0%A4%95%E0%A5%87_%E0%A4%98%E0%A5%87%E0%A4%B0%E0%A5%87_uxihgc.png',
-    route: '/games/dicegame',
-  },
-  {
-    title: 'Mines',
-    description: 'Navigate through mines to earn coins',
-    image: 'https://storage.googleapis.com/kickthe/assets/images/games/mines-hacksawgaming/gb/gbp/tile_large.jpg',
-    route: '/games/minesgame',
-  },
-  {
-    title: 'More game',
-    description: 'More games to be added in the future',
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJygaAX3kSc2zVSUp5R4Jn7KK0dMtSQViX3Q&s',
-  }
-];
+import { getGamesByCategory } from '../../../api/games';
 
 const Earning = () => {
   const navigate = useNavigate();
+  const [games, setGames] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchGames = async () => {
+      try {
+        setLoading(true);
+        const gamesData = await getGamesByCategory('earning');
+        setGames(gamesData);
+      } catch (err) {
+        setError('Failed to load games');
+        console.error('Error fetching earning games:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchGames();
+  }, []);
 
   const handleCardClick = (game) => {
     if (game.route) {
@@ -31,10 +32,26 @@ const Earning = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.loading}>Loading games...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.error}>{error}</div>
+      </div>
+    );
+  }
+
   return (
     <div style={styles.container}>
-      {earningGames.map((game, idx) => (
-        <div key={idx} onClick={() => handleCardClick(game)} style={{ cursor: game.route ? 'pointer' : 'default' }}>
+      {games.map((game, idx) => (
+        <div key={game._id || idx} onClick={() => handleCardClick(game)} style={{ cursor: game.route ? 'pointer' : 'default' }}>
           <Card {...game} />
         </div>
       ))}
@@ -50,6 +67,20 @@ const styles = {
     padding: '0',
     backgroundColor: 'transparent',
   },
+  loading: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    color: 'white',
+    fontSize: '18px',
+    padding: '40px'
+  },
+  error: {
+    gridColumn: '1 / -1',
+    textAlign: 'center',
+    color: '#ff6b6b',
+    fontSize: '16px',
+    padding: '40px'
+  }
 };
 
 export default Earning;

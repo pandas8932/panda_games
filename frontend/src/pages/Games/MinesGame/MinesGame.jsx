@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import API from "../../../api/axios";
 
 export default function MinesGame() {
-  const [bet, setBet] = useState(0.00);
+  const [bet, setBet] = useState('');
   const [mines, setMines] = useState(3);
   const [grid, setGrid] = useState([]);
   const [revealed, setRevealed] = useState([]);
@@ -85,10 +85,13 @@ export default function MinesGame() {
 
   const startGame = async () => {
     try {
+      // Allow playing with 0 coins
+      const betAmount = parseFloat(bet) || 0;
+      
       const token = localStorage.getItem("token");
       const res = await API.post(
         "/mines/start",
-        { bet, mines },
+        { bet: betAmount, mines },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -108,8 +111,12 @@ export default function MinesGame() {
     }
   };
 
+  const [isRevealing, setIsRevealing] = useState(false);
+
   const revealTile = async (tileId) => {
-    if (!gameStarted || gameOver || revealed.includes(tileId)) return;
+    if (!gameStarted || gameOver || revealed.includes(tileId) || isRevealing) return;
+    
+    setIsRevealing(true);
 
     try {
       const token = localStorage.getItem("token");
@@ -166,6 +173,8 @@ export default function MinesGame() {
       return res.data;
     } catch (err) {
       alert(err.response?.data?.message || "Something went wrong");
+    } finally {
+      setIsRevealing(false);
     }
   };
 
@@ -216,7 +225,8 @@ export default function MinesGame() {
 
   const renderTile = (tile) => {
     const isRevealed = revealed.includes(tile.id);
-    const isGameOverMine = gameOver && tile.isMine;
+    // Don't expose mine information to client - only show what's been revealed
+    const isGameOverMine = gameOver && isRevealed && tile.isMine;
 
     return (
       <div
@@ -226,20 +236,18 @@ export default function MinesGame() {
           ...styles.tile,
           backgroundColor: isRevealed 
             ? (tile.isMine ? '#ff4444' : '#44ff44') 
-            : isGameOverMine 
-              ? '#ff4444' 
-              : '#333',
-          cursor: (gameStarted && !gameOver && !isRevealed) ? 'pointer' : 'default',
-          opacity: isRevealed || isGameOverMine ? 1 : 0.8,
+            : '#333',
+          cursor: (gameStarted && !gameOver && !isRevealed && !isRevealing) ? 'pointer' : 'default',
+          opacity: isRevealed ? 1 : 0.8,
         }}
       >
         {isRevealed && !tile.isMine && (
-          <span style={styles.multiplier}>×{tile.multiplier}</span>
+          <span style={styles.multiplier}>💎</span>
         )}
         {isRevealed && tile.isMine && (
           <span style={styles.mine}>💣</span>
         )}
-        {isGameOverMine && !isRevealed && (
+        {isGameOverMine && (
           <span style={styles.mine}>💣</span>
         )}
       </div>
@@ -299,14 +307,25 @@ export default function MinesGame() {
               </select>
             </div>
 
-            {/* Play Button */}
-            <button
-              onClick={startGame}
-              disabled={gameStarted}
-              style={styles.playButton}
-            >
-              Play
-            </button>
+            {/* Play Button - Hidden during game */}
+            {!gameStarted && (
+              <button
+                onClick={startGame}
+                style={styles.playButton}
+              >
+                Play
+              </button>
+            )}
+
+            {/* Cashout Button - Show during game */}
+            {gameStarted && !gameOver && (
+              <button
+                onClick={cashOut}
+                style={styles.cashoutButton}
+              >
+                Cash Out 💰
+              </button>
+            )}
 
             {/* Multiplier Table Button */}
             <button
@@ -324,17 +343,16 @@ export default function MinesGame() {
               How to Play
             </button>
 
+            {/* Security Notice */}
+            <div style={styles.securityNotice}>
+              <p>🔒 Game is secured - mine positions are hidden from inspection</p>
+            </div>
+
             {/* Game Status */}
             {gameStarted && !gameOver && (
               <div style={styles.statusBox}>
                 <p>💎 Current Multiplier: ×{currentMultiplier}</p>
-                <p>💰 Potential Win: {bet * currentMultiplier} coins</p>
-                <button
-                  onClick={cashOut}
-                  style={styles.cashoutButton}
-                >
-                  Cash Out 💰
-                </button>
+                <p>💰 Potential Win: {(parseFloat(bet) || 0) * currentMultiplier} coins</p>
               </div>
             )}
           </div>
@@ -568,6 +586,18 @@ const styles = {
     transition: "all 0.2s ease",
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   },
+  cashoutButton: {
+    padding: "18px",
+    backgroundColor: "#ff6b35",
+    border: "none",
+    borderRadius: "8px",
+    color: "white",
+    fontSize: "18px",
+    fontWeight: "600",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
   tableButton: {
     padding: "12px",
     backgroundColor: "#2a2a2a",
@@ -589,6 +619,14 @@ const styles = {
     fontWeight: "500",
     cursor: "pointer",
     fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  },
+  securityNotice: {
+    backgroundColor: "rgba(255, 215, 0, 0.1)",
+    border: "1px solid rgba(255, 215, 0, 0.3)",
+    borderRadius: "6px",
+    padding: "8px 12px",
+    marginTop: "10px",
+    textAlign: "center",
   },
   statusBox: {
     backgroundColor: "#2a2a2a",

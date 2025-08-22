@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import API from "../../../api/axios";
 
 export default function DiceGame() {
-  const [bet, setBet] = useState(0.00);
+  const [bet, setBet] = useState('');
   const [target, setTarget] = useState(49);
   const [over, setOver] = useState(false);
   const [result, setResult] = useState(null);
@@ -48,10 +48,13 @@ export default function DiceGame() {
 
   const playDice = async () => {
     try {
+      // Allow playing with 0 coins
+      const betAmount = parseFloat(bet) || 0;
+      
       const token = localStorage.getItem("token");
       const res = await API.post(
         "/dice/play",
-        { bet, target, over },
+        { bet: betAmount, target, over },
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -214,23 +217,25 @@ export default function DiceGame() {
               />
             </div>
 
-            {/* Play Button */}
-            <button
-              onClick={playDice}
-              disabled={rolling}
-              style={styles.playButton}
-            >
-              Roll 🎲
-            </button>
+            {/* Play Button - Hidden during auto play */}
+            {!rolling && (
+              <button
+                onClick={playDice}
+                style={styles.playButton}
+              >
+                Roll 🎲
+              </button>
+            )}
 
-            {/* Auto Play Button */}
-            <button
-              onClick={autoplay}
-              disabled={rolling}
-              style={styles.autoPlayButton}
-            >
-              Auto Play
-            </button>
+            {/* Auto Play Button - Hidden during auto play */}
+            {!rolling && (
+              <button
+                onClick={autoplay}
+                style={styles.autoPlayButton}
+              >
+                Auto Play
+              </button>
+            )}
 
             {/* Instructions Button */}
             <button
